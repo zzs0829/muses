@@ -1,0 +1,4 @@
+{
+    "Keys": ["gstreamermediaplayer"],
+    "Services": ["module.muses.mediaplayer"]
+}
