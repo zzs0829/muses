@@ -28,7 +28,8 @@ SOURCES += \
     multimediaengine.cpp \
     multimediacontroller_p.cpp \
     multimediaresourcesetinterface.cpp \
-    multimediaserviceproviderplugin.cpp
+    multimediaserviceproviderplugin.cpp \
+    multimediaresourcepolicy.cpp
 
 include(control/control.pri)
 include(media/media.pri)
@@ -42,6 +43,7 @@ HEADERS += $$PUBLIC_HEADERS $$PRIVATE_HEADERS \
     multimediaengine.h \
     multimediacontroller_p.h \
     multimediaresourcesetinterface.h \
-    multimediaserviceproviderplugin.h
+    multimediaserviceproviderplugin.h \
+    multimediaresourcepolicy.h
 
 load(qt_module)

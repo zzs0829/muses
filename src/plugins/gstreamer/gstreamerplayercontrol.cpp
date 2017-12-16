@@ -1,4 +1,5 @@
 #include "gstreamerplayercontrol.h"
+#include <Multimedia/multimediaresourcepolicy.h>
 
 
 GstreamerPlayerControl::GstreamerPlayerControl(GstreamerPlayerEngine *engine, QObject *parent)
@@ -12,8 +13,8 @@ GstreamerPlayerControl::GstreamerPlayerControl(GstreamerPlayerEngine *engine, QO
     , m_setMediaPending(false)
     , m_stream(0)
 {
-//    m_resources = QMediaResourcePolicy::createResourceSet<MultimediaPlayerResourceSetInterface>();
-//    Q_ASSERT(m_resources);
+    m_resources = MultimediaResourcePolicy::createResourceSet<MultimediaResourceSetInterface>();
+    Q_ASSERT(m_resources);
 
     connect(m_engine, SIGNAL(positionChanged(qint64)),
             this, SIGNAL(positionChanged(qint64)));
@@ -42,23 +43,23 @@ GstreamerPlayerControl::GstreamerPlayerControl(GstreamerPlayerEngine *engine, QO
     connect(m_engine, SIGNAL(playbackRateChanged(qreal)),
             this, SIGNAL(playbackRateChanged(qreal)));
 
-//    connect(m_resources, SIGNAL(resourcesGranted()), SLOT(handleResourcesGranted()));
-//    //denied signal should be queued to have correct state update process,
-//    //since in playOrPause, when acquire is call on resource set, it may trigger a resourcesDenied signal immediately,
-//    //so handleResourcesDenied should be processed later, otherwise it will be overwritten by state update later in playOrPause.
-//    connect(m_resources, SIGNAL(resourcesDenied()), this, SLOT(handleResourcesDenied()), Qt::QueuedConnection);
-//    connect(m_resources, SIGNAL(resourcesLost()), SLOT(handleResourcesLost()));
+    connect(m_resources, SIGNAL(resourcesGranted()), SLOT(handleResourcesGranted()));
+    //denied signal should be queued to have correct state update process,
+    //since in playOrPause, when acquire is call on resource set, it may trigger a resourcesDenied signal immediately,
+    //so handleResourcesDenied should be processed later, otherwise it will be overwritten by state update later in playOrPause.
+    connect(m_resources, SIGNAL(resourcesDenied()), this, SLOT(handleResourcesDenied()), Qt::QueuedConnection);
+    connect(m_resources, SIGNAL(resourcesLost()), SLOT(handleResourcesLost()));
 }
 
 GstreamerPlayerControl::~GstreamerPlayerControl()
 {
-//    QMediaResourcePolicy::destroyResourceSet(m_resources);
+    MultimediaResourcePolicy::destroyResourceSet(m_resources);
 }
 
-//MultimediaPlayerResourceSetInterface* GstreamerPlayerControl::resources() const
-//{
-//    return m_resources;
-//}
+MultimediaResourceSetInterface* GstreamerPlayerControl::resources() const
+{
+    return m_resources;
+}
 
 qint64 GstreamerPlayerControl::position() const
 {
@@ -175,6 +176,9 @@ void GstreamerPlayerControl::pause()
 
 void GstreamerPlayerControl::playOrPause(MultimediaPlayer::State newState)
 {
+#ifdef DEBUG_PLAYBIN
+    qDebug() << Q_FUNC_INFO;
+#endif
     if (m_mediaStatus == MultimediaPlayer::NoMedia)
         return;
 
@@ -189,10 +193,10 @@ void GstreamerPlayerControl::playOrPause(MultimediaPlayer::State newState)
         m_pendingSeekPosition = 0;
     }
 
-//    if (!m_resources->isGranted())
-//        m_resources->acquire();
+    if (!m_resources->isGranted())
+        m_resources->acquire();
 
-    if (true || m_resources->isGranted()) {
+    if (m_resources->isGranted()) {
         // show prerolled frame if switching from stopped state
         if (m_pendingSeekPosition == -1) {
             m_engine->showPrerollFrames(true);
@@ -251,8 +255,8 @@ void GstreamerPlayerControl::stop()
     if (m_currentState != MultimediaPlayer::StoppedState) {
         m_currentState = MultimediaPlayer::StoppedState;
         m_engine->showPrerollFrames(false); // stop showing prerolled frames in stop state
-//        if (m_resources->isGranted())
-//            m_engine->pause();
+        if (m_resources->isGranted())
+            m_engine->pause();
 
         if (m_mediaStatus != MultimediaPlayer::EndOfMedia) {
             m_pendingSeekPosition = 0;
@@ -298,12 +302,12 @@ void GstreamerPlayerControl::setMedia(const MediaContent &content)
     m_engine->showPrerollFrames(false); // do not show prerolled frames until pause() or play() explicitly called
     m_setMediaPending = false;
 
-//    if (!content.isNull() || stream) {
-//        if (!m_resources->isGranted())
-//            m_resources->acquire();
-//    } else {
-//        m_resources->release();
-//    }
+    if (!content.isNull() || stream) {
+        if (!m_resources->isGranted())
+            m_resources->acquire();
+    } else {
+        m_resources->release();
+    }
 
     m_engine->stop();
 
@@ -342,14 +346,10 @@ void GstreamerPlayerControl::setMedia(const MediaContent &content)
 
     emit positionChanged(position());
 
-//    if (content.isNull() && !stream)
-//        m_resources->release();
+    if (content.isNull() && !stream)
+        m_resources->release();
 
     popAndNotifyState();
-
-
-    // TODO:PLAY
-    m_engine->play();
 }
 
 void GstreamerPlayerControl::setVideoOutput(QObject *output)
@@ -418,7 +418,7 @@ void GstreamerPlayerControl::updateMediaStatus()
         break;
     }
 
-    if (m_currentState == MultimediaPlayer::PlayingState )//&& !m_resources->isGranted())
+    if (m_currentState == MultimediaPlayer::PlayingState && !m_resources->isGranted())
         m_mediaStatus = MultimediaPlayer::StalledMedia;
 
     //EndOfMedia status should be kept, until reset by pause, play or setMedia
@@ -453,7 +453,7 @@ void GstreamerPlayerControl::setBufferProgress(int progress)
 #endif
     m_bufferProgress = progress;
 
-    if (true || m_resources->isGranted()) {
+    if (m_resources->isGranted()) {
         if (m_currentState == MultimediaPlayer::PlayingState &&
                 m_bufferProgress == 100 &&
                 m_engine->state() != MultimediaPlayer::PlayingState)

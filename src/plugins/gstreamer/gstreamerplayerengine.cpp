@@ -444,8 +444,14 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
 
             QMap<QByteArray, QVariant> newTags = GstUtils::gstTagListToMap(tag_list);
             QMap<QByteArray, QVariant>::const_iterator it = newTags.constBegin();
-            for ( ; it != newTags.constEnd(); ++it)
+            for ( ; it != newTags.constEnd(); ++it) {
+#ifdef DEBUG_PLAYBIN
+                qDebug() << qUtf8Printable(QString("TAG[ %1 ] : %2") \
+                                           .arg(QString(it.key())) \
+                                           .arg(it.value().toString()));
+#endif
                 m_tags.insert(it.key(), it.value()); // overwrite existing tags
+            }
 
             gst_tag_list_free(tag_list);
 
@@ -485,10 +491,10 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
                     QStringList states;
                     states << "GST_STATE_VOID_PENDING" <<  "GST_STATE_NULL" << "GST_STATE_READY" << "GST_STATE_PAUSED" << "GST_STATE_PLAYING";
 
-                    qDebug() << QString("state changed: old: %1  new: %2  pending: %3") \
+                    qDebug() << qPrintable(QString("state changed: old: %1  new: %2  pending: %3") \
                             .arg(states[oldState]) \
                             .arg(states[newState]) \
-                            .arg(states[pending]);
+                            .arg(states[pending]));
 #endif
 
                     switch (newState) {
@@ -967,7 +973,7 @@ void GstreamerPlayerEngine::updateDuration()
         m_durationQueries--;
     }
 #ifdef DEBUG_PLAYBIN
-        qDebug() << Q_FUNC_INFO << m_duration;
+        qDebug() << Q_FUNC_INFO << m_duration / 1000 << "s";
 #endif
 }
 
