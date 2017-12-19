@@ -36,6 +36,7 @@ public:
                         Optional: QVideoWindowControl, QVideoRendererControl, QVideoWidgetControl
 */
 #define MEDIASERVICE_MEDIAPLAYER "module.muses.mediaplayer"
+#define MEDIASERVICE_PLAYLIST "module.muses.playlist"
 
 HS_END_NAMESPACE
 

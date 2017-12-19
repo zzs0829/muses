@@ -1,7 +1,6 @@
 TARGET = Multimedia
 
 QT += core-private network
-QT -= gui
 
 CONFIG += git_build
 
@@ -29,13 +28,12 @@ SOURCES += \
     multimediacontroller_p.cpp \
     multimediaresourcesetinterface.cpp \
     multimediaserviceproviderplugin.cpp \
-    multimediaresourcepolicy.cpp
+    multimediaresourcepolicy.cpp \
+    multimedia.cpp \
+    multimediaobject_p.cpp
 
-include(control/control.pri)
 include(media/media.pri)
 include(controller/controller.pri)
-include(abstract/abstract.pri)
-include(audiovideo/audiovideo.pri)
 
 HEADERS += $$PUBLIC_HEADERS $$PRIVATE_HEADERS \
     multimediabindableinterface.h \
@@ -44,6 +42,8 @@ HEADERS += $$PUBLIC_HEADERS $$PRIVATE_HEADERS \
     multimediacontroller_p.h \
     multimediaresourcesetinterface.h \
     multimediaserviceproviderplugin.h \
-    multimediaresourcepolicy.h
+    multimediaresourcepolicy.h \
+    multimedia.h \
+    multimediaobject_p.h
 
 load(qt_module)

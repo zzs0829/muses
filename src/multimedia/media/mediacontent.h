@@ -18,6 +18,7 @@ class MULTIMEDIA_EXPORT MediaContent
 {
 public:
     MediaContent();
+    MediaContent(const QUrl &url);
     MediaContent(const QNetworkRequest &request);
     MediaContent(const MediaContent &other);
     MediaContent(MediaPlaylist *playlist, bool takeOwnership = false);
@@ -30,7 +31,7 @@ public:
 
     bool isNull() const;
 
-    QUrl resource() const;
+    QUrl url() const;
     QNetworkRequest request() const;
 
     MediaPlaylist *playlist() const;

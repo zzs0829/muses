@@ -1,0 +1,3 @@
+module Multimedia
+plugin declarative_multimedia
+classname MultimediaDeclarativeModule

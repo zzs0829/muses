@@ -6,5 +6,6 @@ qtHaveModule(quick) {
 }
 
 unix:!mac:!android {
-    SUBDIRS += gstreamer
+    SUBDIRS += gstreamer\
+               nativeplaylist
 }

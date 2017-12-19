@@ -7,6 +7,7 @@
 
 HS_BEGIN_NAMESPACE
 
+class MultimediaObjectPrivate;
 class MULTIMEDIA_EXPORT MultimediaObject : public QObject
 {
     Q_OBJECT
@@ -16,6 +17,16 @@ public:
 signals:
 
 public slots:
+
+protected:
+    void addPropertyWatch(QByteArray const &name);
+    void removePropertyWatch(QByteArray const &name);
+
+    MultimediaObjectPrivate *d_ptr;
+
+private:
+    Q_DECLARE_PRIVATE(MultimediaObject)
+    Q_PRIVATE_SLOT(d_func(), void _q_notify())
 };
 
 HS_END_NAMESPACE

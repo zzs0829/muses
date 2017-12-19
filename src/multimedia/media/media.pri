@@ -8,4 +8,10 @@ PRIVATE_HEADERS += \
 
 SOURCES += \
     $$PWD/mediacontent.cpp \
-    $$PWD/mediaplaylist.cpp
+    $$PWD/mediaplaylist.cpp \
+    $$PWD/mediaplayer.cpp \
+    $$PWD/mediaplayer_p.cpp
+
+HEADERS += \
+    $$PWD/mediaplayer.h \
+    $$PWD/mediaplayer_p.h

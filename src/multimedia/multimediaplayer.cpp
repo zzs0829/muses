@@ -17,7 +17,7 @@ Q_CONSTRUCTOR_FUNCTION(qRegisterMultimediaPlayerMetaTypes)
     指定参数： \a parent 和 \a flags。
 */
 MultimediaPlayer::MultimediaPlayer(QObject *parent, MultimediaPlayer::Flags flags) :
-    QObject(parent)
+    MultimediaObject(parent)
 {
     Q_UNUSED(flags);
 }

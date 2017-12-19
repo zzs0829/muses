@@ -144,7 +144,7 @@ GstreamerPlayerEngine::GstreamerPlayerEngine(QObject *parent) :
             m_busHelper = new GstreamerBusHelper(m_bus, this);
             m_busHelper->installMessageFilter(this);
 
-            g_object_set(G_OBJECT(m_playbin), "video-sink", m_videoOutputBin, NULL);
+//            g_object_set(G_OBJECT(m_playbin), "video-sink", m_videoOutputBin, NULL);
 
 //            g_signal_connect(G_OBJECT(m_playbin), "source-setup", G_CALLBACK(playbinNotifySource), this); // notify::source
 //            g_signal_connect(G_OBJECT(m_playbin), "element-setup",  G_CALLBACK(handleElementAdded), this);  // element-added

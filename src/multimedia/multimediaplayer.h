@@ -1,13 +1,13 @@
 #ifndef MULTIMEDIAPLAYER_H
 #define MULTIMEDIAPLAYER_H
 
+#include <Multimedia/multimediaobject.h>
 #include <Multimedia/multimediaglobal.h>
 #include <Multimedia/multimediacontroller.h>
-#include <QtCore/qobject.h>
 
 HS_BEGIN_NAMESPACE
 
-class MULTIMEDIA_EXPORT MultimediaPlayer : public QObject
+class MULTIMEDIA_EXPORT MultimediaPlayer : public MultimediaObject
 {
     Q_OBJECT
     Q_ENUMS(State)

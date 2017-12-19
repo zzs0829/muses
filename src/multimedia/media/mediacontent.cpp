@@ -58,6 +58,11 @@ MediaContent::MediaContent()
 {
 
 }
+MediaContent::MediaContent(const QUrl &url):
+    d(new MediaContentPrivate)
+{
+    d->request = QNetworkRequest(url);
+}
 
 /*!
     Constructs a media content with \a url providing a reference to the content.
@@ -142,7 +147,7 @@ bool MediaContent::isNull() const
     Returns a QUrl that represents that resource for this media content.
 */
 
-QUrl MediaContent::resource() const
+QUrl MediaContent::url() const
 {
     return request().url();
 }

@@ -1,0 +1,4 @@
+{
+    "Keys": ["nativeplaylist"],
+    "Services": ["module.muses.playlist"]
+}
