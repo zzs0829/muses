@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QDir>
+#include <QReadWriteLock>
 #include <QMutex>
 #include <QWaitCondition>
 #include <QFileInfo>
@@ -11,51 +12,34 @@ class NativeFileFindWorker : public QThread
 {
     Q_OBJECT
 public:
-    explicit NativeFileFindWorker(QObject *parent = 0);
+    NativeFileFindWorker(const QString &path,
+                         const QStringList &nameFilters = QStringList(),
+                         bool hidden = false,
+                         bool caseSensitive = false);
+    NativeFileFindWorker(QObject *parent,
+                         const QString &path,
+                         const QStringList &nameFilters = QStringList(),
+                         bool hidden = false,
+                         bool caseSensitive = false);
     ~NativeFileFindWorker();
 
-    void clear();
-    void removePath(const QString &path);
-    void setPath(const QString &path);
-    void setRootPath(const QString &path);
-    void setSortFlags(QDir::SortFlags flags);
-    void setNameFilters(const QStringList & nameFilters);
-    void setShowFiles(bool show);
-    void setShowDirs(bool showFolders);
-    void setShowDirsFirst(bool show);
-    void setShowDotAndDotDot(bool on);
-    void setShowHidden(bool on);
-    void setShowOnlyReadable(bool on);
-    void setCaseSensitive(bool on);
-
-signals:
-    void directoryChanged(const QString &directory, const QList<QFileInfo> &list) const;
-
-public slots:
+    QFileInfoList filelist();
+    QString path() const;
+    void waitForFinished();
 
 protected:
     void run() Q_DECL_OVERRIDE;
-    void findFileInfos(const QString &path);
 
 private:
-    QMutex mutex;
-    QWaitCondition condition;
+    mutable QMutex mutex;
+    QWaitCondition waitForFinishedCondition;
+#if (QT_VERSION < QT_VERSION_CHECK(5, 2, 0))
     volatile bool abort;
-    QList<QFileInfo> currentFileList;
-    QDir::SortFlags sortFlags;
-    QString currentPath;
-    QString rootPath;
-    QStringList nameFilters;
-    bool needUpdate;
-    bool folderUpdate;
-    bool sortUpdate;
-    bool showFiles;
-    bool showDirs;
-    bool showDirsFirst;
-    bool showDotAndDotDot;
-    bool showHidden;
-    bool showOnlyReadable;
-    bool caseSensitive;
+#endif
+    QFileInfoList m_filelist;
+    QString m_path;
+    QStringList m_nameFilters;
+    QDir::Filters m_filters;
 };
 
 #endif // NATIVEFILEFINDWORKER_H

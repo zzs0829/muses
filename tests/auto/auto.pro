@@ -1,3 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS += \
-    cmake 
+    unit \
+    cmake
+
+OTHER_FILES += runautotests.py
