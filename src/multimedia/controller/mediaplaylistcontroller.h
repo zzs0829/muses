@@ -6,6 +6,7 @@
 #include <Multimedia/multimediaglobal.h>
 #include <Multimedia/multimediacontroller.h>
 #include <Multimedia/mediacontent.h>
+#include <Multimedia/mediaplaylist.h>
 
 HS_BEGIN_NAMESPACE
 
