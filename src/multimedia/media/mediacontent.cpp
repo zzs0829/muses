@@ -4,6 +4,9 @@
 
 HS_BEGIN_NAMESPACE
 
+// USING LOG
+Q_DECLARE_LOGGING_CATEGORY(__media__)
+
 static void qRegisterMediaContentMetaTypes()
 {
     qRegisterMetaType<MediaContent>();
@@ -15,38 +18,27 @@ Q_CONSTRUCTOR_FUNCTION(qRegisterMediaContentMetaTypes)
 class MediaContentPrivate : public QSharedData
 {
 public:
-    MediaContentPrivate():
-        isPlaylistOwned(false)
+    MediaContentPrivate()
     {}
 
     MediaContentPrivate(const MediaContentPrivate &other):
         QSharedData(other),
-        request(other.request),
-        playlist(other.playlist),
-        isPlaylistOwned(false)
+        request(other.request)
     {}
-
-    MediaContentPrivate(MediaPlaylist *pls, bool isOwn):
-        playlist(pls),
-        isPlaylistOwned(isOwn)
-    {
-    }
 
     ~MediaContentPrivate()
     {
-        if (isPlaylistOwned && !playlist.isNull())
-            playlist.data()->deleteLater();
+        members.clear();
     }
 
     bool operator ==(const MediaContentPrivate &other) const
     {
-        return request == other.request && playlist == other.playlist;
+        return request == other.request &&
+                members == other.members;
     }
 
     QNetworkRequest request;
-
-    QPointer<MediaPlaylist> playlist;
-    bool isPlaylistOwned;
+    QList<MediaContent> members;
 private:
     MediaContentPrivate& operator=(const MediaContentPrivate &other);
 };
@@ -58,6 +50,7 @@ MediaContent::MediaContent()
 {
 
 }
+
 MediaContent::MediaContent(const QUrl &url):
     d(new MediaContentPrivate)
 {
@@ -79,20 +72,6 @@ MediaContent::MediaContent(const QNetworkRequest &request):
 
 MediaContent::MediaContent(const MediaContent &other):
     d(other.d)
-{
-}
-
-/*!
-    Constructs a media content with \a playlist.
-
-    \a contentUrl of a playlist is an optional parameter and can be empty.
-
-    Set \a takeOwnership to true if you want MediaContent to take ownership of the playlist.
-    \a takeOwnership is set to false by default.
-*/
-
-MediaContent::MediaContent(MediaPlaylist *playlist, bool takeOwnership):
-    d(new MediaContentPrivate(playlist, takeOwnership))
 {
 }
 
@@ -135,9 +114,34 @@ bool MediaContent::operator!=(const MediaContent &other) const
 }
 
 /*!
+    Returns true if this media content is a group; false otherwise.
+*/
+bool MediaContent::isGroup() const
+{
+    if(isNull())
+        return false;
+
+    return !(d->members.isEmpty());
+}
+
+/*!
+    Returns true if this media content is empty (url or group); false otherwise.
+*/
+bool MediaContent::isEmpty() const
+{
+    if(isNull())
+        return true;
+
+    if(isGroup()) {
+        return d->members.isEmpty();
+    }else{
+        return d->request.url().isEmpty();
+    }
+}
+
+/*!
     Returns true if this media content is null (uninitialized); false otherwise.
 */
-
 bool MediaContent::isNull() const
 {
     return d.constData() == 0;
@@ -146,7 +150,6 @@ bool MediaContent::isNull() const
 /*!
     Returns a QUrl that represents that resource for this media content.
 */
-
 QUrl MediaContent::url() const
 {
     return request().url();
@@ -155,21 +158,133 @@ QUrl MediaContent::url() const
 /*!
     Returns a QNetworkRequest that represents that canonical resource for this media content.
 */
-
 QNetworkRequest MediaContent::request() const
 {
     return d->request;
 }
 
 /*!
-    Returns a playlist for this media content or 0 if this MediaContent is not a playlist.
+    Removes all members from the group or Resets the content of the request.
 */
-
-MediaPlaylist *MediaContent::playlist() const
+void MediaContent::clear()
 {
-    return d.constData() != 0
-            ? d->playlist.data()
-            : 0;
+    if(isNull()) {
+        return;
+    }
+
+    removeAll();
+    d->request = QNetworkRequest();
+}
+
+/*!
+    Returns the number of members in the group.
+*/
+int MediaContent::count() const
+{
+    if(isNull()) {
+        return 0;
+    }
+
+    return d->members.count();
+}
+
+/*!
+    Returns true if the group contains an occurrence of member; otherwise returns false.
+*/
+bool MediaContent::contains(const MediaContent &member) const
+{
+    if(isNull()) {
+        qCWarning(__media__) << "The media content is null to contains member.";
+        return false;
+    }
+
+    return d->members.contains(member);
+}
+
+/*!
+    Inserts member at the end of the media content group.
+*/
+void MediaContent::append(const MediaContent &member)
+{
+    if(isNull()) {
+        qCWarning(__media__) << "The media content is null to append member.";
+        return;
+    }
+
+    if(!(d->members.contains(member))) {
+        d->members.append(member);
+    }
+}
+
+/*!
+    Removes all members from the group.
+*/
+int MediaContent::removeAll()
+{
+    if(isNull()) {
+        qCWarning(__media__) << "The media content is null to remove all members.";
+        return 0;
+    }
+
+    int count = d->members.count();
+    d->members.clear();
+    return count;
+}
+
+/*!
+    Removes the first occurrence of member in the group and returns true on success; otherwise returns false.
+*/
+bool MediaContent::remove(const MediaContent &member)
+{
+    if(isNull()) {
+        qCWarning(__media__) << "The media content is null to remove the first occurrence of member.";
+        return false;
+    }
+
+    return d->members.removeOne(member);
+}
+
+void MediaContent::sort(SortFlags flags)
+{
+    if(isNull()) {
+        qCWarning(__media__) << "The media content is null to sort all of members.";
+        return;
+    }
+    std::sort(d->members.begin(), d->members.end(), [&flags](
+              const MediaContent &member1, const MediaContent &member2 ){
+        bool isGroupFirst = flags.testFlag(MediaContent::GroupFirst);
+        bool isGroupLast = flags.testFlag(MediaContent::GroupLast);
+        bool isUrlString = flags.testFlag(MediaContent::UrlString);
+        bool isReversed = flags.testFlag(MediaContent::Reversed);
+        QString url1 = member1.url().toString();
+        QString url2 = member2.url().toString();
+        if(isGroupFirst) {
+            if(member1.isGroup() && !member2.isGroup())
+                return !isReversed;
+            else if(!member1.isGroup() && member2.isGroup())
+                return isReversed;
+            else if(url1 > url2)
+                return !isReversed;
+            else
+                return isReversed;
+        }else if(isGroupLast) {
+            if(member1.isGroup() && !member2.isGroup())
+                return isReversed;
+            else if(!member1.isGroup() && member2.isGroup())
+                return !isReversed;
+            else if(url1 > url2)
+                return !isReversed;
+            else
+                return isReversed;
+        }else if(isUrlString) {
+            if(url1 > url2)
+                return !isReversed;
+            else
+                return isReversed;
+        }else{
+            return false;
+        }
+    });
 }
 
 

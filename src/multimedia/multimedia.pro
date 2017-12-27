@@ -30,7 +30,8 @@ SOURCES += \
     multimediaserviceproviderplugin.cpp \
     multimediaresourcepolicy.cpp \
     multimedia.cpp \
-    multimediaobject_p.cpp
+    multimediaobject_p.cpp \
+    multimediaglobal.cpp
 
 include(media/media.pri)
 include(controller/controller.pri)

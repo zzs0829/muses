@@ -2,6 +2,7 @@
 #define MULTIMEDIAGLOBAL_H
 
 #include <QtCore/qglobal.h>
+#include <QLoggingCategory>
 
 
 #if !defined(HS_NAMESPACE)  /* user namespace */
@@ -10,6 +11,10 @@
 # define HS_USE_NAMESPACE
 # define HS_BEGIN_NAMESPACE
 # define HS_END_NAMESPACE
+
+#ifndef LOG_CATEGORY_MEDIA
+#define LOG_CATEGORY_MEDIA "muses.media"
+#endif
 
 #else /* user namespace */
 
