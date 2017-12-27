@@ -9,8 +9,12 @@ class NativePlaylistEngine : public MultimediaEngine
 public:
     explicit NativePlaylistEngine(QObject *parent = 0);
 
-//    void setRootPath(const QString &path);
+    void setRootPath(const QString &path);
 
+signals:
+
+private:
+    QString m_rootPath;
 };
 
 #endif // NATIVEPLAYLISTENGINE_H

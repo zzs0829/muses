@@ -5,3 +5,11 @@ NativePlaylistEngine::NativePlaylistEngine(QObject *parent) :
 {
 
 }
+
+void NativePlaylistEngine::setRootPath(const QString &path)
+{
+    if(path == m_rootPath)
+        return;
+
+    m_rootPath = path;
+}
