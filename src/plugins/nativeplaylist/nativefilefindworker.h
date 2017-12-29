@@ -23,12 +23,14 @@ public:
                          bool caseSensitive = false);
     ~NativeFileFindWorker();
 
-    QFileInfoList filelist();
     QString path() const;
     void waitForFinished();
 
 protected:
     void run() Q_DECL_OVERRIDE;
+
+signals:
+    void findWorkFinished(const QFileInfoList &filelist);
 
 private:
     mutable QMutex mutex;
@@ -36,7 +38,6 @@ private:
 #if (QT_VERSION < QT_VERSION_CHECK(5, 2, 0))
     volatile bool abort;
 #endif
-    QFileInfoList m_filelist;
     QString m_path;
     QStringList m_nameFilters;
     QDir::Filters m_filters;

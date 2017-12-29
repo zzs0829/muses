@@ -49,6 +49,9 @@ public:
     bool remove(const MediaContent &member);
     void sort(SortFlags flags = GroupFirst);
 
+    inline MediaContent &operator<< (const MediaContent &member)
+    { append(member); return *this; }
+
 private:
     QSharedDataPointer<MediaContentPrivate> d;
 };

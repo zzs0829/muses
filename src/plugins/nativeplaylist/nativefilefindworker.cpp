@@ -46,11 +46,6 @@ NativeFileFindWorker::~NativeFileFindWorker()
 #endif
 }
 
-QFileInfoList NativeFileFindWorker::filelist()
-{
-    return m_filelist;
-}
-
 QString NativeFileFindWorker::path() const
 {
     return m_path;
@@ -59,8 +54,10 @@ QString NativeFileFindWorker::path() const
 void NativeFileFindWorker::waitForFinished()
 {
     QMutexLocker locker(&mutex);
-    if(!isFinished())
-        waitForFinishedCondition.wait(&mutex);
+    if(isFinished()) // already finished
+        return;
+
+    waitForFinishedCondition.wait(&mutex);
 }
 
 
@@ -75,14 +72,14 @@ void NativeFileFindWorker::run()
     QDirIterator it(m_path, m_nameFilters, m_filters,
                     QDirIterator::Subdirectories);
 
-    m_filelist.clear();
+    QFileInfoList filelist;
     while (it.hasNext()) {
 #if (QT_VERSION < QT_VERSION_CHECK(5, 2, 0))
         if (abort) return;
 #else
         if (isInterruptionRequested()) return;
 #endif
-        m_filelist << QFileInfo(it.next());
+        filelist << QFileInfo(it.next());
     }
 
 #ifdef TIME_DEBUG
@@ -94,5 +91,6 @@ void NativeFileFindWorker::run()
     }
     qDebug(" %s  [ FOUND ] [ %f %s ]", qPrintable(m_path), times, qPrintable(unit));
 #endif
+    emit findWorkFinished(filelist);
     waitForFinishedCondition.wakeAll();
 }
