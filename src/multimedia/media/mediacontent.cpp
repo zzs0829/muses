@@ -285,6 +285,12 @@ void MediaContent::sort(SortFlags flags)
             return false;
         }
     });
+
+    foreach (MediaContent content, d->members) {
+        if(content.isGroup()) {
+            content.sort(flags);
+        }
+    }
 }
 
 

@@ -9,13 +9,17 @@ HEADERS += \
     nativeplaylistserviceplugin.h \
     nativeplaylistservice.h \
     nativeplaylistengine.h \
-    nativefilefindworker.h
+    nativefilefindworker.h \
+    nativeplaylistcontrol.h \
+    nativeplaylistprovider.h
 
 SOURCES += \
     nativeplaylistserviceplugin.cpp \
     nativeplaylistservice.cpp \
     nativeplaylistengine.cpp \
-    nativefilefindworker.cpp
+    nativefilefindworker.cpp \
+    nativeplaylistcontrol.cpp \
+    nativeplaylistprovider.cpp
 
 PLUGIN_TYPE = mediaservice
 PLUGIN_CLASS_NAME = NativePlaylistServicePlugin

@@ -65,21 +65,22 @@ void NativeFileFindWorker::run()
 {
     QMutexLocker locker(&mutex);
 #ifdef TIME_DEBUG
-            QTime time;
-            time.start();
+    QTime time;
+    time.start();
 #endif
-
-    QDirIterator it(m_path, m_nameFilters, m_filters,
-                    QDirIterator::Subdirectories);
-
     QFileInfoList filelist;
-    while (it.hasNext()) {
+
+    if(!m_nameFilters.isEmpty()) {
+        QDirIterator it(m_path, m_nameFilters, m_filters,
+                        QDirIterator::Subdirectories);
+        while (it.hasNext()) {
 #if (QT_VERSION < QT_VERSION_CHECK(5, 2, 0))
-        if (abort) return;
+            if (abort) return;
 #else
-        if (isInterruptionRequested()) return;
+            if (isInterruptionRequested()) return;
 #endif
-        filelist << QFileInfo(it.next());
+            filelist << QFileInfo(it.next());
+        }
     }
 
 #ifdef TIME_DEBUG

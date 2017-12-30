@@ -7,6 +7,7 @@
 #include <Multimedia/multimediacontroller.h>
 #include <Multimedia/mediacontent.h>
 #include <Multimedia/mediaplaylist.h>
+#include <Multimedia/mediaplaylistprovider.h>
 
 HS_BEGIN_NAMESPACE
 
@@ -17,6 +18,9 @@ protected:
     explicit MediaPlaylistController(QObject *parent = Q_NULLPTR);
 
 public:
+
+    virtual MediaPlaylistProvider* playlistProvider() const = 0;
+    virtual bool setPlaylistProvider(MediaPlaylistProvider *playlist) = 0;
 
     virtual int currentIndex() const = 0;
     virtual void setCurrentIndex(int position) = 0;
@@ -31,6 +35,7 @@ public:
 
 
 signals:
+    void playlistProviderChanged();
     void currentIndexChanged(int position);
     void currentMediaChanged(const MediaContent&);
     void playbackModeChanged(MediaPlaylist::PlaybackMode mode);

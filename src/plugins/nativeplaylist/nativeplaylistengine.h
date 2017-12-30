@@ -9,14 +9,16 @@ class NativePlaylistEngine : public MultimediaEngine
 {
     Q_OBJECT
 public:
-    explicit NativePlaylistEngine(const QString &path,
-                                  const QStringList &nameFilters,
-                                  QObject *parent = 0);
+    NativePlaylistEngine(const QString &path,
+                         const QStringList &nameFilters,
+                         QObject *parent = 0);
 
 public slots:
     void startFindWork();
 
 signals:
+    void mediaContentFound(const QList<MediaContent> &medias);
+    void finished();
 
 private slots:
     void _onFindWorkFinished(const QFileInfoList &filelist);
@@ -26,8 +28,6 @@ private:
     QString m_path;
     QStringList m_nameFilters;
     QFileInfoList m_filelist;
-    QScopedPointer<MediaContent> m_originalContent;
-    QScopedPointer<MediaContent> m_groupedContent;
 };
 
 #endif // NATIVEPLAYLISTENGINE_H

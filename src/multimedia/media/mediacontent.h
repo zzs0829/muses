@@ -53,7 +53,7 @@ public:
     { append(member); return *this; }
 
 private:
-    QSharedDataPointer<MediaContentPrivate> d;
+    QExplicitlySharedDataPointer<MediaContentPrivate> d;
 };
 
 HS_END_NAMESPACE
