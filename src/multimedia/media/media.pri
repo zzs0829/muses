@@ -12,10 +12,12 @@ SOURCES += \
     $$PWD/mediaplayer.cpp \
     $$PWD/mediaplayer_p.cpp \
     $$PWD/mediaplaylistnavigator.cpp \
-    $$PWD/mediaplaylistprovider.cpp
+    $$PWD/mediaplaylistprovider.cpp \
+    $$PWD/mediaplayerfactory.cpp
 
 HEADERS += \
     $$PWD/mediaplayer.h \
     $$PWD/mediaplayer_p.h \
     $$PWD/mediaplaylistnavigator.h \
-    $$PWD/mediaplaylistprovider.h
+    $$PWD/mediaplaylistprovider.h \
+    $$PWD/mediaplayerfactory.h

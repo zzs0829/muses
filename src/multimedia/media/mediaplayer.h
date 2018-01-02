@@ -5,13 +5,12 @@
 #include <Multimedia/mediacontent.h>
 #include "mediaplaylist.h"
 
+class MediaPlayerFactory;
 class MediaPlayerPrivate;
 class MediaPlayer : public MultimediaPlayer
 {
     Q_OBJECT
 public:
-
-    explicit MediaPlayer(QObject *parent = Q_NULLPTR, Flags flags = Flags());
     ~MediaPlayer();
 
     MediaPlaylist *playlist() const;
@@ -73,6 +72,9 @@ protected:
     MediaPlayerPrivate *d_ptr;
 
 private:
+    friend class MediaPlayerFactory;
+    explicit MediaPlayer(QObject *parent = Q_NULLPTR, Flags flags = Flags());
+
     Q_DECLARE_PRIVATE(MediaPlayer)
 };
 
