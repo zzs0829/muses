@@ -46,8 +46,9 @@ public slots:
 //    void setVolume(int volume);
 //    void setMuted(bool muted);
 
-//    void setPlaybackRate(qreal rate);
-//    void setPlaylist(MediaPlaylist *playlist);
+    void setPlaybackRate(qreal rate);
+
+    void setPlaylist(MediaPlaylist *playlist);
 
 signals:
     void stateChanged(MultimediaPlayer::State newState);
