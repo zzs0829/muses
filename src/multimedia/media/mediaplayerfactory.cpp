@@ -1,17 +1,24 @@
 #include "mediaplayerfactory.h"
-
-Q_GLOBAL_STATIC(MediaPlayerFactory, playerFactory)
-
+#include "mediaplayer_p.h"
+#include <Multimedia/multimediaserviceprovider.h>
+#include <Multimedia/multimediaserviceproviderplugin.h>
 
 MediaPlayerFactory::MediaPlayerFactory(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      control(0)
 {
-
+    MultimediaServiceProvider *provider = MultimediaServiceProvider::defaultServiceProvider();
+    MultimediaService* service = provider->requestService(MEDIASERVICE_MEDIAPLAYER);
+    if(service) {
+        control = service->requestController<MediaPlayerController *>();
+    }
 }
 
 MediaPlayerFactory *MediaPlayerFactory::instance()
 {
-    return playerFactory();
+    // C++11 Thread safe
+    static MediaPlayerFactory playerFactory;
+    return &playerFactory;
 }
 
 MediaPlayer *MediaPlayerFactory::create(const QString &key)
@@ -34,19 +41,46 @@ void MediaPlayerFactory::destory(MediaPlayer *player)
     }
 }
 
+bool MediaPlayerFactory::checkAvailable(MediaPlayer *player)
+{
+    QString key = m_players.key(player);
+    bool contains = m_players.contains(key);
+    Q_ASSERT_X(contains, "check available player", "The play is not in factory.");
+
+    if(!contains) {
+        qWarning("The play is not in factory to check available player.");
+        return false;
+    }
+
+    return key == m_availableKey;
+}
+
 bool MediaPlayerFactory::available(MediaPlayer *player)
 {
     QString key = m_players.key(player);
     bool contains = m_players.contains(key);
     Q_ASSERT_X(contains, "available player", "The play is not in factory.");
 
+    if(!control){
+        qWarning("The control is null to available player.");
+        return false;
+    }
+
     if(!contains) {
         qWarning("The play is not in factory to available player.");
         return false;
     }
+
     if(key == m_availableKey)
         return true;
 
+    if(!m_availableKey.isEmpty()) {
+        MediaPlayer *old = m_players.value(m_availableKey);
+        old->d_func()->unbindControl(control);
+    }
+    player->d_func()->bindControl(control);
+    m_availableKey = key;
+    return true;
 }
 
 bool MediaPlayerFactory::unavailable(MediaPlayer *player)
@@ -55,11 +89,20 @@ bool MediaPlayerFactory::unavailable(MediaPlayer *player)
     bool contains = m_players.contains(key);
     Q_ASSERT_X(contains, "unavailable player", "The play is not in factory.");
 
+    if(!control){
+        qWarning("The control is null to unavailable player.");
+        return false;
+    }
+
     if(!contains) {
         qWarning("The play is not in factory to unavailable player.");
         return false;
     }
+
     if(key != m_availableKey)
         return true;
 
+    player->d_func()->unbindControl(control);
+    m_availableKey = QString();
+    return true;
 }

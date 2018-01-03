@@ -6,6 +6,7 @@ CONFIG += git_build
 
 MODULE_PLUGIN_TYPES = \
     mediaservice \
+    medialist \
 
 PUBLIC_HEADERS += \
                     multimediaglobal.h \
@@ -31,7 +32,9 @@ SOURCES += \
     multimediaresourcepolicy.cpp \
     multimedia.cpp \
     multimediaobject_p.cpp \
-    multimediaglobal.cpp
+    multimediaglobal.cpp \
+    multimediapluginloader.cpp \
+    multimediaserviceprovider.cpp
 
 include(media/media.pri)
 include(controller/controller.pri)
@@ -45,6 +48,8 @@ HEADERS += $$PUBLIC_HEADERS $$PRIVATE_HEADERS \
     multimediaserviceproviderplugin.h \
     multimediaresourcepolicy.h \
     multimedia.h \
-    multimediaobject_p.h
+    multimediaobject_p.h \
+    multimediapluginloader.h \
+    multimediaserviceprovider.h
 
 load(qt_module)

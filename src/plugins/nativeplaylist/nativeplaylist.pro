@@ -21,7 +21,7 @@ SOURCES += \
     nativeplaylistcontrol.cpp \
     nativeplaylistprovider.cpp
 
-PLUGIN_TYPE = mediaservice
+PLUGIN_TYPE = medialist
 PLUGIN_CLASS_NAME = NativePlaylistServicePlugin
 load(qt_plugin)
 

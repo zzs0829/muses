@@ -2,6 +2,7 @@
 #define MEDIAPLAYER_P_H
 
 #include "mediaplayer.h"
+#include <Multimedia/mediaplayercontroller.h>
 
 #include <QtCore/qfileinfo.h>
 
@@ -14,18 +15,21 @@ public:
 
     void setMedia(const MediaContent &media);
 
-signals:
-    void requestSetMedia(const MediaContent &media);
+    void bindControl(MediaPlayerController *control);
+    void unbindControl(MediaPlayerController *control);
 
 public slots:
     void _q_stateChanged(MultimediaPlayer::State state);
     void _q_mediaStatusChanged(MultimediaPlayer::MediaStatus status);
     void _q_error(int error, const QString &errorString);
+    void _q_handleMediaChanged(const MediaContent&);
 
 public:
     MediaPlayer *q_ptr;
 
+    MediaPlayerController *control;
     MediaPlaylist *playlist;
+    MediaContent curMedia;
     MediaContent qrcMedia;
     QScopedPointer<QFile> qrcFile;
 

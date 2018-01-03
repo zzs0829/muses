@@ -2,6 +2,7 @@
 #define MEDIAPLAYERFACTORY_H
 
 #include <Multimedia/mediaplayer.h>
+#include <Multimedia/mediaplayercontroller.h>
 #include <QObject>
 
 class MediaPlayerFactory : public QObject
@@ -13,6 +14,7 @@ public:
     MediaPlayer *create(const QString &key);
     void destory(MediaPlayer *player);
 
+    bool checkAvailable(MediaPlayer *player);
     bool available(MediaPlayer *player);
     bool unavailable(MediaPlayer *player);
 
@@ -23,6 +25,7 @@ public slots:
 private:
     explicit MediaPlayerFactory(QObject *parent = 0);
 
+    MediaPlayerController *control;
     QMap<QString, MediaPlayer *> m_players;
     QString m_availableKey;
 };

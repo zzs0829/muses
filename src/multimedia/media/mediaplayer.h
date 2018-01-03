@@ -18,6 +18,11 @@ public:
     State state() const;
     MediaStatus mediaStatus() const;
 
+    MediaContent media() const;
+    // When playing a resource file, don't return the backend's current media, which
+    // can be a temporary file.
+    MediaContent currentMedia() const;
+
     qint64 duration() const;
     qint64 position() const;
 
@@ -37,19 +42,25 @@ public:
 //    QMultimedia::AvailabilityStatus availability() const override;
 
 public slots:
-//    void play();
-//    void pause();
-//    void stop();
+    void play();
+    void pause();
+    void stop();
 
-//    void setPosition(qint64 position);
-//    void setVolume(int volume);
-//    void setMuted(bool muted);
+    void setPosition(qint64 position);
+    void setVolume(int v);
+    void setMuted(bool muted);
 
     void setPlaybackRate(qreal rate);
 
+    void setMedia(const MediaContent &media);
     void setPlaylist(MediaPlaylist *playlist);
 
 signals:
+    void mediaChanged(const MediaContent &media);
+    // When playing a resource file, don't return the backend's current media, which
+    // can be a temporary file.
+    void currentMediaChanged(const MediaContent &media);
+
     void stateChanged(MultimediaPlayer::State newState);
     void mediaStatusChanged(MultimediaPlayer::MediaStatus status);
 
