@@ -1,10 +1,10 @@
 #ifndef MULTIMEDIASERVICE_H
 #define MULTIMEDIASERVICE_H
 
-#include <Multimedia/multimediaglobal.h>
 #include <QtCore/qobject.h>
-
-#include "Multimedia/multimediacontroller.h"
+#include <Multimedia/multimediaglobal.h>
+#include <Multimedia/multimediacontroller.h>
+#include <Multimedia/multimediasession.h>
 
 
 HS_BEGIN_NAMESPACE
@@ -13,9 +13,6 @@ class MultimediaServicePrivate;
 class MULTIMEDIA_EXPORT MultimediaService : public QObject
 {
     Q_OBJECT
-protected:
-    explicit MultimediaService(QObject *parent);
-    MultimediaService(MultimediaServicePrivate &dd, QObject *parent);
 
 public:
     ~MultimediaService();
@@ -32,9 +29,12 @@ public:
         return 0;
     }
 
-signals:
+    virtual MultimediaSession* requestSession(const QString &key) = 0;
 
-public slots:
+protected:
+    explicit MultimediaService(QObject *parent);
+    MultimediaService(MultimediaServicePrivate &dd, QObject *parent);
+    MultimediaServicePrivate *d_ptr;
 
 private:
     Q_DECLARE_PRIVATE(MultimediaService)

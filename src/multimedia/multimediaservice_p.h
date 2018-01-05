@@ -2,15 +2,17 @@
 #define MULTIMEDIASERVICE_P_H
 
 #include "multimediaservice.h"
-#include "private/qobject_p.h"
-
 
 HS_BEGIN_NAMESPACE
 
-class MultimediaServicePrivate: public QObjectPrivate
+class MultimediaServicePrivate
 {
     Q_DECLARE_PUBLIC(MultimediaService)
 public:
+    MultimediaServicePrivate(): q_ptr(0) {}
+    virtual ~MultimediaServicePrivate() {}
+
+    MultimediaService *q_ptr;
 };
 
 HS_END_NAMESPACE

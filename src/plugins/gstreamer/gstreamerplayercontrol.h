@@ -15,42 +15,42 @@ public:
     GstreamerPlayerControl(GstreamerPlayerEngine *engine, QObject *parent = 0);
     ~GstreamerPlayerControl();
 
-    MultimediaPlayer::State state() const override;
-    MultimediaPlayer::MediaStatus mediaStatus() const override;
+    MultimediaPlayer::State state() const Q_DECL_OVERRIDE;
+    MultimediaPlayer::MediaStatus mediaStatus() const Q_DECL_OVERRIDE;
 
-    qint64 position() const override;
-    qint64 duration() const override;
+    qint64 position() const Q_DECL_OVERRIDE;
+    qint64 duration() const Q_DECL_OVERRIDE;
 
-    int bufferStatus() const override;
+    int bufferStatus() const Q_DECL_OVERRIDE;
 
-    int volume() const override;
-    bool isMuted() const override;
+    int volume() const Q_DECL_OVERRIDE;
+    bool isMuted() const Q_DECL_OVERRIDE;
 
-    bool isAudioAvailable() const override;
-    bool isVideoAvailable() const override;
+    bool isAudioAvailable() const Q_DECL_OVERRIDE;
+    bool isVideoAvailable() const Q_DECL_OVERRIDE;
     void setVideoOutput(QObject *output);
 
-    bool isSeekable() const override;
-//    MultimediaTimeRange availablePlaybackRanges() const override;
+    bool isSeekable() const Q_DECL_OVERRIDE;
+//    MultimediaTimeRange availablePlaybackRanges() const Q_DECL_OVERRIDE;
 
-    qreal playbackRate() const override;
-    void setPlaybackRate(qreal rate) override;
+    qreal playbackRate() const Q_DECL_OVERRIDE;
+    void setPlaybackRate(qreal rate) Q_DECL_OVERRIDE;
 
-    MediaContent media() const override;
-    const QIODevice *mediaStream() const override;
-    void setMedia(const MediaContent&) override;
+    MediaContent media() const Q_DECL_OVERRIDE;
+    const QIODevice *mediaStream() const Q_DECL_OVERRIDE;
+    void setMedia(const MediaContent&) Q_DECL_OVERRIDE;
 
     MultimediaResourceSetInterface* resources() const;
 
 public Q_SLOTS:
-    void setPosition(qint64 pos) override;
+    void setPosition(qint64 pos) Q_DECL_OVERRIDE;
 
-    void play() override;
-    void pause() override;
-    void stop() override;
+    void play() Q_DECL_OVERRIDE;
+    void pause() Q_DECL_OVERRIDE;
+    void stop() Q_DECL_OVERRIDE;
 
-    void setVolume(int volume) override;
-    void setMuted(bool muted) override;
+    void setVolume(int volume) Q_DECL_OVERRIDE;
+    void setMuted(bool muted) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void updateSessionState(MultimediaPlayer::State state);
