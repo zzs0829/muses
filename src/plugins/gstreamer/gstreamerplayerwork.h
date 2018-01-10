@@ -29,6 +29,7 @@ private slots:
     void _q_handlePause();
     void _q_handleStop();
 
+    void _q_mediaChanged(const MediaContent& content);
     void _q_durationChanged(qint64 duration);
     void _q_positionChanged(qint64 position);
     void _q_stateChanged(MultimediaPlayer::State newState);

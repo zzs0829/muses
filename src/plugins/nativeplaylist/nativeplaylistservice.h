@@ -15,6 +15,8 @@ public:
 
     virtual MultimediaSession* requestSession(const QString &key) Q_DECL_OVERRIDE;
 
+    virtual void releaseSession(MultimediaSession *session) Q_DECL_OVERRIDE;
+
     virtual void availableSession(MultimediaSession *session) Q_DECL_OVERRIDE;
 
 private:

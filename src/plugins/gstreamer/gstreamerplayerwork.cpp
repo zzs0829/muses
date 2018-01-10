@@ -45,6 +45,7 @@ void GstreamerPlayerWork::stop()
     disconnect(m_session, SIGNAL(handlePlay()), this, SLOT(_q_handlePlay()));
     disconnect(m_session, SIGNAL(handleStop()), this, SLOT(_q_handleStop()));
 
+    disconnect(m_control, SIGNAL(mediaChanged(MediaContent)), this, SLOT(_q_mediaChanged(MediaContent)));
     disconnect(m_control, SIGNAL(audioAvailableChanged(bool)), this, SLOT(_q_audioAvailableChanged(bool)));
     disconnect(m_control, SIGNAL(bufferStatusChanged(int)), this, SLOT(_q_bufferStatusChanged(int)));
     disconnect(m_control, SIGNAL(durationChanged(qint64)), this, SLOT(_q_durationChanged(qint64)));
@@ -104,15 +105,67 @@ void GstreamerPlayerWork::_q_handleStop()
     m_control->stop();
 }
 
-void GstreamerPlayerWork::_q_durationChanged(qint64 duration);
-void GstreamerPlayerWork::_q_positionChanged(qint64 position);
-void GstreamerPlayerWork::_q_stateChanged(MultimediaPlayer::State newState);
-void GstreamerPlayerWork::_q_mediaStatusChanged(MultimediaPlayer::MediaStatus status);
-void GstreamerPlayerWork::_q_volumeChanged(int volume);
-void GstreamerPlayerWork::_q_mutedChanged(bool muted);
-void GstreamerPlayerWork::_q_audioAvailableChanged(bool audioAvailable);
-void GstreamerPlayerWork::_q_videoAvailableChanged(bool videoAvailable);
-void GstreamerPlayerWork::_q_bufferStatusChanged(int percentFilled);
-void GstreamerPlayerWork::_q_seekableChanged(bool);
-void GstreamerPlayerWork::_q_playbackRateChanged(qreal rate);
-void GstreamerPlayerWork::_q_error(int error, const QString &errorString);
+void GstreamerPlayerWork::_q_mediaChanged(const MediaContent &content)
+{
+    m_session->_updateMedia(content);
+}
+
+void GstreamerPlayerWork::_q_durationChanged(qint64 duration)
+{
+    m_session->_updateDuration(duration);
+}
+
+void GstreamerPlayerWork::_q_positionChanged(qint64 position)
+{
+    m_session->_updatePosition(position);
+}
+
+void GstreamerPlayerWork::_q_stateChanged(MultimediaPlayer::State newState)
+{
+    m_session->_updatePlaybackState(newState);
+}
+
+void GstreamerPlayerWork::_q_mediaStatusChanged(MultimediaPlayer::MediaStatus status)
+{
+    m_session->_updateMediaStatus(status);
+}
+
+void GstreamerPlayerWork::_q_volumeChanged(int volume)
+{
+    m_session->_updateVolume(volume);
+}
+
+void GstreamerPlayerWork::_q_mutedChanged(bool muted)
+{
+    m_session->_updateMuted(muted);
+}
+
+void GstreamerPlayerWork::_q_audioAvailableChanged(bool audioAvailable)
+{
+    m_session->_updateAudioAvailable(audioAvailable);
+}
+
+void GstreamerPlayerWork::_q_videoAvailableChanged(bool videoAvailable)
+{
+    m_session->_updateVideoAvailable(videoAvailable);
+}
+
+void GstreamerPlayerWork::_q_bufferStatusChanged(int percentFilled)
+{
+    m_session->_updateBufferStatus(percentFilled);
+}
+
+void GstreamerPlayerWork::_q_seekableChanged(bool seekable)
+{
+    m_session->_updateSeekable(seekable);
+}
+
+void GstreamerPlayerWork::_q_playbackRateChanged(qreal rate)
+{
+    m_session->_updatePlaybackRate(rate);
+}
+
+void GstreamerPlayerWork::_q_error(int error, const QString &errorString)
+{
+    m_session->_updateError(error, errorString);
+}

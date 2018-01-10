@@ -14,10 +14,14 @@ class PluginServiceProvider : public MultimediaServiceProvider
     };
 
     QMap<const MultimediaService*, MediaServiceData> mediaServiceData;
+    QMap<QString, MultimediaService*> mediaServices;
 public:
-    MultimediaService* requestService(const QByteArray &type) override
+    MultimediaService* requestService(const QByteArray &type) Q_DECL_OVERRIDE
     {
         QString key(QLatin1String(type.constData()));
+        if(mediaServices.contains(key)) {
+            return mediaServices[key];
+        }
 
         QList<MultimediaServiceProviderPlugin *>plugins;
         const auto instances = loader()->instances(key);
@@ -38,6 +42,7 @@ public:
                     d.type = type;
                     d.plugin = plugin;
                     mediaServiceData.insert(service, d);
+                    mediaServices.insert(key, service);
                 }
 
                 return service;
@@ -48,7 +53,7 @@ public:
         return 0;
     }
 
-    void releaseService(MultimediaService *service) override
+    void releaseService(MultimediaService *service) Q_DECL_OVERRIDE
     {
         if (service != 0) {
             MediaServiceData d = mediaServiceData.take(service);

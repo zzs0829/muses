@@ -20,7 +20,7 @@ public:
     QVariantMap property;
 
     void setState(MultimediaSession::State s);
-    void setProperty(const QString &k, const QVariant &v);
+    void setProperty(const QString &k, const QVariant &v, bool emited = true);
 };
 
 HS_END_NAMESPACE

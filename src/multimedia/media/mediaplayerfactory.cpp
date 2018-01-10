@@ -24,7 +24,7 @@ MediaPlayerFactory *MediaPlayerFactory::instance()
 MediaPlayer *MediaPlayerFactory::create(const QString &key)
 {
     if(!m_players.contains(key)) {
-        m_players.insert(key, new MediaPlayer(this));
+//        m_players.insert(key, new MediaPlayer(this));
     }
     return m_players.value(key);
 }
@@ -76,9 +76,9 @@ bool MediaPlayerFactory::available(MediaPlayer *player)
 
     if(!m_availableKey.isEmpty()) {
         MediaPlayer *old = m_players.value(m_availableKey);
-        old->d_func()->unbindControl(control);
+//        old->d_func()->unbindControl(control);
     }
-    player->d_func()->bindControl(control);
+//    player->d_func()->bindControl(control);
     m_availableKey = key;
     return true;
 }
@@ -102,7 +102,7 @@ bool MediaPlayerFactory::unavailable(MediaPlayer *player)
     if(key != m_availableKey)
         return true;
 
-    player->d_func()->unbindControl(control);
+//    player->d_func()->unbindControl(control);
     m_availableKey = QString();
     return true;
 }

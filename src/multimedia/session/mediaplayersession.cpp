@@ -9,12 +9,31 @@ QMap<MediaPlayerSession::PropertyType, QString> MediaPlayerSession::propertyMap;
 MediaPlayerSession::MediaPlayerSession(const QString &id, const QString &key, QObject *parent) :
     MultimediaSession(* new MediaPlayerSessionPrivate(id, key), parent)
 {
+    initProperty();
 }
 
 MediaPlayerSession::MediaPlayerSession(MediaPlayerSessionPrivate &dd,
                                      QObject *parent)  :
     MultimediaSession(dd, parent)
 {
+    initProperty();
+}
+
+void MediaPlayerSession::initProperty()
+{
+    _updateMedia(MediaContent());
+    _updatePlaybackState(MultimediaPlayer::StoppedState);
+    _updateMediaStatus(MultimediaPlayer::NoMedia);
+    _updateDuration(-1);
+    _updatePosition(0);
+    _updateVolume(100);
+    _updateMuted(false);
+    _updateBufferStatus(-1);
+    _updateAudioAvailable(false);
+    _updateVideoAvailable(false);
+    _updateSeekable(false);
+    _updatePlaybackRate(1.0);
+    _updateError(0, QString());
 }
 
 void MediaPlayerSession::initPropertyMap()
@@ -33,6 +52,8 @@ void MediaPlayerSession::initPropertyMap()
         propertyMap.insert(Seekable, QStringLiteral("Seekable"));
         propertyMap.insert(PlaybackRate, QStringLiteral("PlaybackRate"));
         propertyMap.insert(Media, QStringLiteral("Media"));
+        propertyMap.insert(Error, QStringLiteral("Error"));
+        propertyMap.insert(ErrorString, QStringLiteral("ErrorString"));
         inited = true;
     }
 }
@@ -79,12 +100,8 @@ qint64 MediaPlayerSession::position() const
 
 void MediaPlayerSession::setPosition(qint64 position)
 {
-    if(this->position() == position)
-        return;
-
     QString key = MediaPlayerSession::propertyKey(Position);
     setSessionProperty(key, position);
-    emit sessionPropertyChanged(key, QVariant::fromValue(position));
 }
 
 int MediaPlayerSession::volume() const
@@ -96,12 +113,8 @@ int MediaPlayerSession::volume() const
 
 void MediaPlayerSession::setVolume(int volume)
 {
-    if(this->volume() == volume)
-        return;
-
     QString key = MediaPlayerSession::propertyKey(Volume);
     setSessionProperty(key, volume);
-    emit sessionPropertyChanged(key, QVariant::fromValue(volume));
 }
 
 bool MediaPlayerSession::isMuted() const
@@ -113,12 +126,8 @@ bool MediaPlayerSession::isMuted() const
 
 void MediaPlayerSession::setMuted(bool muted)
 {
-    if(this->isMuted() == muted)
-        return;
-
     QString key = MediaPlayerSession::propertyKey(Muted);
     setSessionProperty(key, muted);
-    emit sessionPropertyChanged(key, QVariant::fromValue(muted));
 }
 
 int MediaPlayerSession::bufferStatus() const
@@ -158,12 +167,8 @@ qreal MediaPlayerSession::playbackRate() const
 
 void MediaPlayerSession::setPlaybackRate(qreal rate)
 {
-    if(this->playbackRate() == rate)
-        return;
-
     QString key = MediaPlayerSession::propertyKey(PlaybackRate);
     setSessionProperty(key, rate);
-    emit sessionPropertyChanged(key, QVariant::fromValue(rate));
 }
 
 MediaContent MediaPlayerSession::media() const
@@ -175,12 +180,8 @@ MediaContent MediaPlayerSession::media() const
 
 void MediaPlayerSession::setMedia(const MediaContent &media)
 {
-    if(this->media() == media)
-        return;
-
     QString key = MediaPlayerSession::propertyKey(Media);
     setSessionProperty(key, QVariant::fromValue(media));
-    emit sessionPropertyChanged(key, QVariant::fromValue(media));
 }
 
 void MediaPlayerSession::play()
@@ -196,6 +197,151 @@ void MediaPlayerSession::pause()
 void MediaPlayerSession::stop()
 {
     emit handleStop();
+}
+
+void MediaPlayerSession::_updateMedia(const MediaContent& content)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(Media);
+    if(sessionProperty(key).value<MediaContent>() == content)
+        return;
+
+    d->setProperty(key, QVariant::fromValue(content), false);
+    emit mediaChanged(content);
+}
+
+void MediaPlayerSession::_updatePlaybackState(MultimediaPlayer::State newState)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(PlaybackState);
+    if(sessionProperty(key) == newState)
+        return;
+
+    d->setProperty(key, newState, false);
+    emit stateChanged(newState);
+}
+
+void MediaPlayerSession::_updateMediaStatus(MultimediaPlayer::MediaStatus status)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(MediaStatus);
+    if(sessionProperty(key) == status)
+        return;
+
+    d->setProperty(key, status, false);
+    emit mediaStatusChanged(status);
+}
+
+void MediaPlayerSession::_updateDuration(qint64 duration)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(Duration);
+    if(sessionProperty(key) == duration)
+        return;
+
+    d->setProperty(key, duration, false);
+    emit durationChanged(duration);
+}
+
+void MediaPlayerSession::_updatePosition(qint64 position)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(Position);
+    if(sessionProperty(key) == position)
+        return;
+
+    d->setProperty(key, position, false);
+    emit positionChanged(position);
+}
+
+void MediaPlayerSession::_updateVolume(int volume)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(Volume);
+    if(sessionProperty(key) == volume)
+        return;
+
+    d->setProperty(key, volume, false);
+    emit volumeChanged(volume);
+}
+
+void MediaPlayerSession::_updateMuted(bool muted)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(Muted);
+    if(sessionProperty(key) == muted)
+        return;
+
+    d->setProperty(key, muted, false);
+    emit mutedChanged(muted);
+}
+
+void MediaPlayerSession::_updateBufferStatus(int percentFilled)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(BufferStatus);
+    if(sessionProperty(key) == percentFilled)
+        return;
+
+    d->setProperty(key, percentFilled, false);
+    emit bufferStatusChanged(percentFilled);
+}
+
+void MediaPlayerSession::_updateAudioAvailable(bool audioAvailable)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(AudioAvailable);
+    if(sessionProperty(key) == audioAvailable)
+        return;
+
+    d->setProperty(key, audioAvailable, false);
+    emit audioAvailableChanged(audioAvailable);
+}
+
+void MediaPlayerSession::_updateVideoAvailable(bool videoAvailable)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(VideoAvailable);
+    if(sessionProperty(key) == videoAvailable)
+        return;
+
+    d->setProperty(key, videoAvailable, false);
+    emit videoAvailableChanged(videoAvailable);
+}
+
+void MediaPlayerSession::_updateSeekable(bool seekable)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(Seekable);
+    if(sessionProperty(key) == seekable)
+        return;
+
+    d->setProperty(key, seekable, false);
+    emit seekableChanged(seekable);
+}
+
+void MediaPlayerSession::_updatePlaybackRate(qreal rate)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(PlaybackRate);
+    if(sessionProperty(key) == rate)
+        return;
+
+    d->setProperty(key, rate, false);
+    emit playbackRateChanged(rate);
+}
+
+void MediaPlayerSession::_updateError(int err, const QString &errorString)
+{
+    Q_D(MediaPlayerSession);
+    QString key = MediaPlayerSession::propertyKey(Error);
+    QString key1 = MediaPlayerSession::propertyKey(ErrorString);
+    if(sessionProperty(key) == err)
+        return;
+
+    d->setProperty(key, err, false);
+    d->setProperty(key1, errorString, false);
+    emit error(err, errorString);
 }
 
 HS_END_NAMESPACE

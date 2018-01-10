@@ -31,6 +31,8 @@ public:
 
     virtual MultimediaSession* requestSession(const QString &key) = 0;
 
+    virtual void releaseSession(MultimediaSession *session) = 0;
+
     virtual void availableSession(MultimediaSession *session) = 0;
 
 protected:

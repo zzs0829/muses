@@ -22,6 +22,11 @@ MultimediaSession* NativePlaylistService::requestSession(const QString &key)
     return 0;
 }
 
+void NativePlaylistService::releaseSession(MultimediaSession *session)
+{
+    Q_UNUSED(session);
+}
+
 void NativePlaylistService::availableSession(MultimediaSession *session)
 {
     Q_UNUSED(session);

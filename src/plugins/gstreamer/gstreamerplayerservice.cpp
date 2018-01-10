@@ -34,6 +34,25 @@ MultimediaSession* GstreamerPlayerService::requestSession(const QString &key)
     return session;
 }
 
+void GstreamerPlayerService::releaseSession(MultimediaSession *session)
+{
+    GstreamerPlayerSession *playerSession = qobject_cast<GstreamerPlayerSession *>(session);
+    if(!playerSession) {
+        return;
+    }
+
+    if(playerSession->sessionState() == MultimediaSession::Available) {
+        if(m_work) {
+            m_work->session()->d_func()->setState(MultimediaSession::NotAvailable);
+            m_work->stop();
+            m_work = 0;
+        }
+    }
+
+    m_sessions.remove(m_sessions.key(playerSession));
+    playerSession->deleteLater();
+}
+
 void GstreamerPlayerService::availableSession(MultimediaSession *session)
 {
     GstreamerPlayerSession *playerSession = qobject_cast<GstreamerPlayerSession *>(session);

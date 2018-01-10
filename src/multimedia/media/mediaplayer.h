@@ -13,6 +13,7 @@ class MULTIMEDIA_EXPORT MediaPlayer : public MultimediaPlayer
 {
     Q_OBJECT
 public:
+    explicit MediaPlayer(const QString &key, QObject *parent = Q_NULLPTR, Flags flags = Flags());
     ~MediaPlayer();
 
     MediaPlaylist *playlist() const;
@@ -86,7 +87,6 @@ protected:
 
 private:
     friend class MediaPlayerFactory;
-    explicit MediaPlayer(QObject *parent = Q_NULLPTR, Flags flags = Flags());
 
     Q_DECLARE_PRIVATE(MediaPlayer)
 };

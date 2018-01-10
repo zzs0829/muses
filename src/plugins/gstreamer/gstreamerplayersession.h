@@ -5,11 +5,13 @@
 #include <Multimedia/mediaplayercontroller.h>
 
 class GstreamerPlayerService;
+class GstreamerPlayerWork;
 class GstreamerPlayerSessionPrivate;
 class GstreamerPlayerSession : public MediaPlayerSession
 {
     Q_OBJECT
     friend class GstreamerPlayerService;
+    friend class GstreamerPlayerWork;
 public:
     GstreamerPlayerSession(const QString &id, const QString &key, QObject *parent = 0);
 

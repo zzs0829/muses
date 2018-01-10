@@ -25,12 +25,13 @@ void MultimediaSessionPrivate::setState(MultimediaSession::State s)
     emit q->sessionStateChanged(state);
 }
 
-void MultimediaSessionPrivate::setProperty(const QString &k, const QVariant &v)
+void MultimediaSessionPrivate::setProperty(const QString &k, const QVariant &v, bool emited)
 {
     Q_Q(MultimediaSession);
     if( v == property[k])
         return;
 
     property[k] = v;
-    emit q->sessionPropertyChanged(k, v);
+    if(emited)
+        emit q->sessionPropertyChanged(k, v);
 }
