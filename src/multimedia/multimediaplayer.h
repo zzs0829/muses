@@ -54,7 +54,7 @@ public:
 
 public:
     explicit MultimediaPlayer(QObject *parent = Q_NULLPTR, Flags flags = Flags());
-    ~MultimediaPlayer();
+    virtual ~MultimediaPlayer();
 
 signals:
 

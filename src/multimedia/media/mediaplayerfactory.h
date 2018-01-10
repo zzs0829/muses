@@ -5,7 +5,9 @@
 #include <Multimedia/mediaplayercontroller.h>
 #include <QObject>
 
-class MediaPlayerFactory : public QObject
+HS_BEGIN_NAMESPACE
+
+class MULTIMEDIA_EXPORT MediaPlayerFactory : public QObject
 {
     Q_OBJECT
 public:
@@ -29,5 +31,7 @@ private:
     QMap<QString, MediaPlayer *> m_players;
     QString m_availableKey;
 };
+
+HS_END_NAMESPACE
 
 #endif // MEDIAPLAYERFACTORY_H

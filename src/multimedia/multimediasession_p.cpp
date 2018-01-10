@@ -1,7 +1,9 @@
 #include "multimediasession_p.h"
 
-MultimediaSessionPrivate::MultimediaSessionPrivate():
+MultimediaSessionPrivate::MultimediaSessionPrivate(const QString &id, const QString &key):
     q_ptr(0),
+    id(id),
+    key(key),
     state(MultimediaSession::Invalid)
 {
 

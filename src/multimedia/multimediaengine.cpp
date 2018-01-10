@@ -7,4 +7,9 @@ MultimediaEngine::MultimediaEngine(QObject *parent) : QObject(parent)
 
 }
 
+MultimediaEngine::~MultimediaEngine()
+{
+
+}
+
 HS_END_NAMESPACE

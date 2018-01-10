@@ -7,7 +7,7 @@
 class GstreamerPlayerSessionPrivate : public MediaPlayerSessionPrivate
 {
 public:
-    GstreamerPlayerSessionPrivate();
+    GstreamerPlayerSessionPrivate(const QString &id, const QString &key);
 };
 
 #endif // GSTREAMERPLAYERSESSION_P_H

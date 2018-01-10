@@ -22,6 +22,7 @@ public:
         Connected,
         Disconnected
     };
+    virtual ~MultimediaSession();
 
     QString sessionId() const;
     QString sessionKey() const;
@@ -35,7 +36,7 @@ signals:
     void sessionPropertyChanged(const QString &key, const QVariant &value);
 
 protected:
-    explicit MultimediaSession(QObject *parent = 0);
+    explicit MultimediaSession(const QString &id, const QString &key, QObject *parent = 0);
     MultimediaSession(MultimediaSessionPrivate &dd, QObject *parent);
     MultimediaSessionPrivate *d_ptr;
 
@@ -46,7 +47,6 @@ private:
 HS_END_NAMESPACE
 
 Q_DECLARE_METATYPE(MultimediaSession::State)
-
 MULTIMEDIA_ENUM_DEBUG(MultimediaSession, State)
 
 #endif // MULTIMEDIASESSION_H

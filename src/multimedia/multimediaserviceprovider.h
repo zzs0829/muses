@@ -8,6 +8,8 @@ class MultimediaServiceProvider : public QObject
 {
     Q_OBJECT
 public:
+    virtual ~MultimediaServiceProvider();
+
     virtual MultimediaService* requestService(const QByteArray &type) = 0;
     virtual void releaseService(MultimediaService *service) = 0;
 

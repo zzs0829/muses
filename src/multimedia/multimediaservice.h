@@ -15,7 +15,7 @@ class MULTIMEDIA_EXPORT MultimediaService : public QObject
     Q_OBJECT
 
 public:
-    ~MultimediaService();
+    virtual ~MultimediaService();
 
     virtual MultimediaController* requestController(const char *uid) = 0;
 
@@ -30,6 +30,8 @@ public:
     }
 
     virtual MultimediaSession* requestSession(const QString &key) = 0;
+
+    virtual void availableSession(MultimediaSession *session) = 0;
 
 protected:
     explicit MultimediaService(QObject *parent);

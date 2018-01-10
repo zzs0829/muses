@@ -10,6 +10,11 @@ MultimediaObject::MultimediaObject(QObject *parent) :
 
 }
 
+MultimediaObject::~MultimediaObject()
+{
+    delete d_ptr;
+}
+
 void MultimediaObject::addPropertyWatch(QByteArray const &name)
 {
     Q_D(MultimediaObject);

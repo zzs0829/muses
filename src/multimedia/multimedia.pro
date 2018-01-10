@@ -36,7 +36,9 @@ SOURCES += \
     multimediapluginloader.cpp \
     multimediaserviceprovider.cpp \
     multimediasession.cpp \
-    multimediasession_p.cpp
+    multimediasession_p.cpp \
+    multimediasessionwork.cpp \
+    multimediasessionwork_p.cpp
 
 include(media/media.pri)
 include(controller/controller.pri)
@@ -55,7 +57,9 @@ HEADERS += $$PUBLIC_HEADERS $$PRIVATE_HEADERS \
     multimediapluginloader.h \
     multimediaserviceprovider.h \
     multimediasession.h \
-    multimediasession_p.h
+    multimediasession_p.h \
+    multimediasessionwork.h \
+    multimediasessionwork_p.h
 
 load(qt_module)
 

@@ -10,7 +10,7 @@ class MULTIMEDIA_PRIVATE_EXPORT MediaPlayerSessionPrivate :
         public MultimediaSessionPrivate
 {
 public:
-    MediaPlayerSessionPrivate();
+    MediaPlayerSessionPrivate(const QString &id, const QString &key);
 };
 
 HS_END_NAMESPACE

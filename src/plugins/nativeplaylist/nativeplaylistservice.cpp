@@ -15,3 +15,14 @@ MultimediaController* NativePlaylistService::requestController(const char *uid)
         return m_control;
     return 0;
 }
+
+MultimediaSession* NativePlaylistService::requestSession(const QString &key)
+{
+    Q_UNUSED(key);
+    return 0;
+}
+
+void NativePlaylistService::availableSession(MultimediaSession *session)
+{
+    Q_UNUSED(session);
+}

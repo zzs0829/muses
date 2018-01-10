@@ -5,9 +5,11 @@
 #include <Multimedia/mediacontent.h>
 #include "mediaplaylist.h"
 
+HS_BEGIN_NAMESPACE
+
 class MediaPlayerFactory;
 class MediaPlayerPrivate;
-class MediaPlayer : public MultimediaPlayer
+class MULTIMEDIA_EXPORT MediaPlayer : public MultimediaPlayer
 {
     Q_OBJECT
 public:
@@ -88,5 +90,7 @@ private:
 
     Q_DECLARE_PRIVATE(MediaPlayer)
 };
+
+HS_END_NAMESPACE
 
 #endif // MEDIAPLAYER_H

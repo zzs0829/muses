@@ -8,5 +8,10 @@ MediaPlaylistController::MediaPlaylistController(QObject *parent) :
 
 }
 
+MediaPlaylistController::~MediaPlaylistController()
+{
+
+}
+
 
 HS_END_NAMESPACE

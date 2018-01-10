@@ -12,13 +12,15 @@ class MULTIMEDIA_EXPORT MultimediaObject : public QObject
 {
     Q_OBJECT
 public:
-    explicit MultimediaObject(QObject *parent = 0);
+    virtual ~MultimediaObject();
 
 signals:
 
 public slots:
 
 protected:
+    explicit MultimediaObject(QObject *parent = 0);
+
     void addPropertyWatch(QByteArray const &name);
     void removePropertyWatch(QByteArray const &name);
 

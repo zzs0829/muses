@@ -2,7 +2,7 @@
 #include "gstreamerplayersession_p.h"
 
 
-GstreamerPlayerSession::GstreamerPlayerSession(QObject *parent) :
-    MediaPlayerSession(* new GstreamerPlayerSessionPrivate, parent)
+GstreamerPlayerSession::GstreamerPlayerSession(const QString &id, const QString &key, QObject *parent) :
+    MediaPlayerSession(* new GstreamerPlayerSessionPrivate(id, key), parent)
 {
 }

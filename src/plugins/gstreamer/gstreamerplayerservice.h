@@ -17,7 +17,7 @@ public:
 
     virtual MultimediaSession* requestSession(const QString &key) Q_DECL_OVERRIDE;
 
-    void availableSession(GstreamerPlayerSession *session);
+    virtual void availableSession(MultimediaSession *session) Q_DECL_OVERRIDE;
 
 signals:
 

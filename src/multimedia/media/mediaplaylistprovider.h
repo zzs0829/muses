@@ -7,6 +7,8 @@
 #include <Multimedia/mediaplaylist.h>
 
 
+HS_BEGIN_NAMESPACE
+
 class MediaPlaylistProviderPrivate
 {
 public:
@@ -70,5 +72,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(MediaPlaylistProvider)
 };
+
+HS_END_NAMESPACE
 
 #endif // MEDIAPLAYLISTPROVIDER_H

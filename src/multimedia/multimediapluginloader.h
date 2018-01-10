@@ -17,7 +17,7 @@ public:
     MultimediaPluginLoader(const char *iid,
                    const QString &suffix = QString(),
                    Qt::CaseSensitivity = Qt::CaseSensitive);
-    ~MultimediaPluginLoader();
+    virtual ~MultimediaPluginLoader();
 
     QStringList keys() const;
     QObject* instance(QString const &key);

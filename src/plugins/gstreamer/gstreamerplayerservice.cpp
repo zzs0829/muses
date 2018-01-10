@@ -23,9 +23,8 @@ MultimediaSession* GstreamerPlayerService::requestSession(const QString &key)
 {
     GstreamerPlayerSession *session = m_sessions.value(key, Q_NULLPTR);
     if(!session) {
-        session = new GstreamerPlayerSession(this);
-        session->d_func()->id = QUuid::createUuid().toString();
-        session->d_func()->key = key;
+        QString id = QUuid::createUuid().toString();
+        session = new GstreamerPlayerSession(id, key, this);
         m_sessions.insert(key, session);
     }
 
@@ -35,14 +34,20 @@ MultimediaSession* GstreamerPlayerService::requestSession(const QString &key)
     return session;
 }
 
-void GstreamerPlayerService::availableSession(GstreamerPlayerSession *session)
+void GstreamerPlayerService::availableSession(MultimediaSession *session)
 {
+    GstreamerPlayerSession *playerSession = qobject_cast<GstreamerPlayerSession *>(session);
+    if(!playerSession) {
+        return;
+    }
+
     if(m_work) {
         m_work->session()->d_func()->setState(MultimediaSession::NotAvailable);
         m_work->stop();
     }
 
-    m_work = new GstreamerPlayerWork(session, m_control, this);
-    session->d_func()->setState(MultimediaSession::Available);
+    m_work = new GstreamerPlayerWork(playerSession, m_control, this);
+    connect(m_work, SIGNAL(finished()), SLOT(deleteLater()));
+    playerSession->d_func()->setState(MultimediaSession::Available);
     m_work->start();
 }

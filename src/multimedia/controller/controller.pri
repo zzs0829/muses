@@ -10,7 +10,6 @@ HEADERS += \
     $$PWD/mediaplayercontroller.h
 
 SOURCES += \
-    $$PWD/playbackcontroller.cpp \
     $$PWD/mediaplaylistcontroller.cpp \
     $$PWD/mediavideoprobecontroller.cpp \
     $$PWD/mediaplayercontroller.cpp

@@ -18,6 +18,7 @@ protected:
     explicit MediaPlaylistController(QObject *parent = Q_NULLPTR);
 
 public:
+    virtual ~MediaPlaylistController();
 
     virtual MediaPlaylistProvider* playlistProvider() const = 0;
     virtual bool setPlaylistProvider(MediaPlaylistProvider *playlist) = 0;

@@ -11,7 +11,7 @@ class GstreamerPlayerSession : public MediaPlayerSession
     Q_OBJECT
     friend class GstreamerPlayerService;
 public:
-    explicit GstreamerPlayerSession(QObject *parent = 0);
+    GstreamerPlayerSession(const QString &id, const QString &key, QObject *parent = 0);
 
 private:
     Q_DISABLE_COPY(GstreamerPlayerSession)

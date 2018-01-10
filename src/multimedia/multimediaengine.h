@@ -11,11 +11,9 @@ class MULTIMEDIA_EXPORT MultimediaEngine : public QObject
 {
     Q_OBJECT
 public:
+    virtual ~MultimediaEngine();
+protected:
     explicit MultimediaEngine(QObject *parent = 0);
-
-signals:
-
-public slots:
 };
 
 HS_END_NAMESPACE

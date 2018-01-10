@@ -3,9 +3,9 @@
 
 HS_BEGIN_NAMESPACE
 
-MultimediaSession::MultimediaSession(QObject *parent) :
+MultimediaSession::MultimediaSession(const QString &id, const QString &key, QObject *parent) :
     QObject(parent)
-  , d_ptr(new MultimediaSessionPrivate)
+  , d_ptr(new MultimediaSessionPrivate(id, key))
 {
     d_ptr->q_ptr = this;
 }
@@ -16,6 +16,11 @@ MultimediaSession::MultimediaSession(MultimediaSessionPrivate &dd,
   , d_ptr(&dd)
 {
     d_ptr->q_ptr = this;
+}
+
+MultimediaSession::~MultimediaSession()
+{
+    delete d_ptr;
 }
 
 QString MultimediaSession::sessionId() const

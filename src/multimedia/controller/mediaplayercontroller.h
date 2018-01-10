@@ -11,7 +11,7 @@ class MULTIMEDIA_EXPORT MediaPlayerController : public MultimediaController
 {
     Q_OBJECT
 public:
-    ~MediaPlayerController();
+    virtual ~MediaPlayerController();
 
     virtual MultimediaPlayer::State state() const = 0;
 

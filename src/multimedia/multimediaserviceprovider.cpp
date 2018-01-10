@@ -70,6 +70,11 @@ void MultimediaServiceProvider::setDefaultServiceProvider(MultimediaServiceProvi
     qt_defaultMediaServiceProvider = provider;
 }
 
+MultimediaServiceProvider::~MultimediaServiceProvider()
+{
+
+}
+
 MultimediaServiceProvider *MultimediaServiceProvider::defaultServiceProvider()
 {
     return qt_defaultMediaServiceProvider != 0

@@ -18,12 +18,9 @@ MultimediaService::MultimediaService(MultimediaServicePrivate &dd,
     d_ptr->q_ptr = this;
 }
 
-/*!
-    Destroys a multimedia service.
-*/
-
 MultimediaService::~MultimediaService()
 {
+    delete d_ptr;
 }
 
 HS_END_NAMESPACE

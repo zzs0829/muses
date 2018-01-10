@@ -12,7 +12,7 @@ class MULTIMEDIA_EXPORT MultimediaController : public QObject
     Q_OBJECT
 
 public:
-    ~MultimediaController();
+    virtual ~MultimediaController();
 
 protected:
     explicit MultimediaController(QObject *parent = 0);

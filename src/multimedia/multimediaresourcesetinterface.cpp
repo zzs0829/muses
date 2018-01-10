@@ -8,6 +8,11 @@ MultimediaResourceSetInterface::MultimediaResourceSetInterface(QObject *parent) 
 
 }
 
+MultimediaResourceSetInterface::~MultimediaResourceSetInterface()
+{
+
+}
+
 QString MultimediaResourceSetInterface::iid()
 {
     return QLatin1String(MultimediaResourceSetInterface_iid);

@@ -13,6 +13,10 @@ public:
 
     virtual MultimediaController* requestController(const char *uid) Q_DECL_OVERRIDE;
 
+    virtual MultimediaSession* requestSession(const QString &key) Q_DECL_OVERRIDE;
+
+    virtual void availableSession(MultimediaSession *session) Q_DECL_OVERRIDE;
+
 private:
     MultimediaController *m_control;
 };

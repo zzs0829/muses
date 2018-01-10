@@ -10,7 +10,7 @@ class MULTIMEDIA_PRIVATE_EXPORT MultimediaSessionPrivate
 {
     Q_DECLARE_PUBLIC(MultimediaSession)
 public:
-    MultimediaSessionPrivate();
+    MultimediaSessionPrivate(const QString &id, const QString &key);
     virtual ~MultimediaSessionPrivate();
 
     MultimediaSession *q_ptr;

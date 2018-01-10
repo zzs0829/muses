@@ -14,6 +14,8 @@ class MULTIMEDIA_EXPORT MultimediaResourceSetInterface : public QObject
 {
     Q_OBJECT
 public:
+    virtual ~MultimediaResourceSetInterface();
+
     virtual bool isVideoEnabled() const = 0; // 是否能播放视频
     virtual bool isGranted() const = 0; // 是否获取
     virtual bool isAvailable() const = 0; // 是否可获取
