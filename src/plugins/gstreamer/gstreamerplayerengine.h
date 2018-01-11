@@ -3,6 +3,8 @@
 
 #include <Multimedia/multimediaengine.h>
 #include <Multimedia/multimediaplayer.h>
+
+#include "gstreamerglobal.h"
 #include "gstreamerbushelper.h"
 #include "gstreamervideorendererinterface.h"
 
@@ -88,12 +90,12 @@ private slots:
     void finishVideoOutputChange();
     void updateVideoRenderer();
     void updateVolume();
-//    void updateMuted();
+    void updateMuted();
     void updateDuration();
 
 private:
     static void handleVolumeChange(GObject *o, GParamSpec *p, gpointer d);
-//    static void handleMutedChange(GObject *o, GParamSpec *p, gpointer d);
+    static void handleMutedChange(GObject *o, GParamSpec *p, gpointer d);
 
     void processInvalidMedia(MultimediaPlayer::Error errorCode, const QString& errorString);
 

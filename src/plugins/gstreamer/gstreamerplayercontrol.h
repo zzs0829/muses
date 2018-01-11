@@ -4,7 +4,8 @@
 #include <Multimedia/mediaplayercontroller.h>
 #include <Multimedia/multimediaresourcesetinterface.h>
 #include "gstreamerplayerengine.h"
-#include <QStack>
+#include <QtCore/qstack.h>
+#include <QtCore/qtimer.h>
 
 HS_BEGIN_NAMESPACE
 
@@ -64,6 +65,8 @@ private Q_SLOTS:
     void handleResourcesLost();
     void handleResourcesDenied();
 
+    void _q_notify();
+
 private:
     void playOrPause(MultimediaPlayer::State state);
 
@@ -84,6 +87,8 @@ private:
     QIODevice *m_stream;
 
     MultimediaResourceSetInterface *m_resources;
+
+    QTimer* notifyTimer;
 };
 
 HS_END_NAMESPACE

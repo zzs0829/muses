@@ -2,6 +2,7 @@
 #define GSTREAMERPLAYERSERVICE_H
 
 #include <Multimedia/multimediaservice.h>
+#include "gstreamerglobal.h"
 #include "gstreamerplayersession.h"
 #include "gstreamerplayerengine.h"
 #include "gstreamerplayercontrol.h"

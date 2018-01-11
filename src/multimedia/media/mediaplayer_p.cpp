@@ -10,15 +10,6 @@ MediaPlayerPrivate::MediaPlayerPrivate(MediaPlayer *parent) :
     playlist(0),
     state(MultimediaPlayer::StoppedState),
     status(MultimediaPlayer::UnknownMediaStatus),
-    duration(-1),
-    position(0),
-    volume(100),
-    muted(false),
-    bufStatus(-1),
-    audioAvailable(false),
-    videoAvailable(false),
-    seekable(false),
-    rate(1.0),
     error(MultimediaPlayer::NoError),
     ignoreNextStatusChange(-1)
 {

@@ -127,8 +127,6 @@ void MediaPlayer::setPosition(qint64 position)
     if (d->session == 0)
         return;
 
-    d->position = position;
-
     d->session->setPosition(qMax(position, 0ll));
 }
 
@@ -143,8 +141,6 @@ void MediaPlayer::setVolume(int v)
     if (clamped == volume())
         return;
 
-    d->volume = clamped;
-
     d->session->setVolume(clamped);
 }
 
@@ -154,8 +150,6 @@ void MediaPlayer::setMuted(bool muted)
 
     if (d->session == 0 || muted == isMuted())
         return;
-
-    d->muted = muted;
 
     d->session->setMuted(muted);
 }
@@ -202,61 +196,96 @@ MultimediaPlayer::MediaStatus MediaPlayer::mediaStatus() const
 qint64 MediaPlayer::duration() const
 {
     Q_D(const MediaPlayer);
-    return d->duration;
+
+    if (d->session != 0)
+        return d->session->duration();
+
+    return -1;
 }
 
 qint64 MediaPlayer::position() const
 {
     Q_D(const MediaPlayer);
-    return d->position;
+
+    if (d->session != 0)
+        return d->session->position();
+
+    return 0;
 }
 
 int MediaPlayer::volume() const
 {
     Q_D(const MediaPlayer);
-    return d->volume;
+
+    if (d->session != 0)
+        return d->session->volume();
+
+    return 0;
 }
 
 bool MediaPlayer::isMuted() const
 {
     Q_D(const MediaPlayer);
-    return d->muted;
+
+    if (d->session != 0)
+        return d->session->isMuted();
+
+    return false;
 }
 
 bool MediaPlayer::isAudioAvailable() const
 {
     Q_D(const MediaPlayer);
-    return d->audioAvailable;
+
+    if (d->session != 0)
+        return d->session->isAudioAvailable();
+
+    return false;
 }
 
 bool MediaPlayer::isVideoAvailable() const
 {
     Q_D(const MediaPlayer);
-    return d->videoAvailable;
+
+    if (d->session != 0)
+        return d->session->isVideoAvailable();
+
+    return false;
 }
 
 int MediaPlayer::bufferStatus() const
 {
     Q_D(const MediaPlayer);
-    return d->bufStatus;
+
+    if (d->session != 0)
+        return d->session->bufferStatus();
+
+    return 0;
 }
 
 bool MediaPlayer::isSeekable() const
 {
     Q_D(const MediaPlayer);
-    return d->seekable;
+
+    if (d->session != 0)
+        return d->session->isSeekable();
+
+    return false;
 }
 
 qreal MediaPlayer::playbackRate() const
 {
     Q_D(const MediaPlayer);
-    return d->rate;
+
+    if (d->session != 0)
+        return d->session->playbackRate();
+
+    return 0.0;
 }
 
 void MediaPlayer::setPlaybackRate(qreal rate)
 {
     Q_D(MediaPlayer);
-    d->rate = rate;
 
     if (d->session != 0)
         d->session->setPlaybackRate(rate);

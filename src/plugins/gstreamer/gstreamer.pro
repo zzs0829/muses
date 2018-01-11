@@ -21,7 +21,8 @@ SOURCES += \
     $$PWD/gstreamerplayerengine.cpp \
     gstreamerplayersession.cpp \
     gstreamerplayersession_p.cpp \
-    gstreamerplayerwork.cpp
+    gstreamerplayerwork.cpp \
+    gstreamerglobal.cpp
 
 HEADERS += \
     $$PWD/gstutils.h \
@@ -37,7 +38,8 @@ HEADERS += \
     $$PWD/gstreamerplayerengine.h \
     gstreamerplayersession.h \
     gstreamerplayersession_p.h \
-    gstreamerplayerwork.h
+    gstreamerplayerwork.h \
+    gstreamerglobal.h
 
 
 PLUGIN_TYPE = mediaservice

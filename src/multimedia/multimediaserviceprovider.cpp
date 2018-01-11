@@ -33,7 +33,7 @@ public:
         }
 
         if (!plugins.isEmpty()) {
-            MultimediaServiceProviderPlugin *plugin = 0;
+            MultimediaServiceProviderPlugin *plugin = plugins[0];
 
             if (plugin != 0) {
                 MultimediaService *service = plugin->create(key);

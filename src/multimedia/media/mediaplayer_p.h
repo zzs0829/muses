@@ -36,16 +36,6 @@ public:
 
     MultimediaPlayer::State state;
     MultimediaPlayer::MediaStatus status;
-    qint64 duration;
-    qint64 position;
-    int volume;
-    bool muted;
-    int bufStatus;
-    bool audioAvailable;
-    bool videoAvailable;
-    bool seekable;
-    qreal rate;
-
     MultimediaPlayer::Error error;
     QString errorString;
     int ignoreNextStatusChange;

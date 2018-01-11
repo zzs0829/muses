@@ -1,6 +1,11 @@
 #include "gstreamerplayercontrol.h"
 #include <Multimedia/multimediaresourcepolicy.h>
+#include <QTime>
 
+
+HS_BEGIN_NAMESPACE
+
+Q_DECLARE_LOGGING_CATEGORY(__gst__)
 
 GstreamerPlayerControl::GstreamerPlayerControl(GstreamerPlayerEngine *engine, QObject *parent)
     : MediaPlayerController(parent)
@@ -12,6 +17,8 @@ GstreamerPlayerControl::GstreamerPlayerControl(GstreamerPlayerEngine *engine, QO
     , m_pendingSeekPosition(-1)
     , m_setMediaPending(false)
     , m_stream(0)
+    , m_resources(0)
+    , notifyTimer(0)
 {
     m_resources = MultimediaResourcePolicy::createResourceSet<MultimediaResourceSetInterface>();
     Q_ASSERT(m_resources);
@@ -49,6 +56,11 @@ GstreamerPlayerControl::GstreamerPlayerControl(GstreamerPlayerEngine *engine, QO
     //so handleResourcesDenied should be processed later, otherwise it will be overwritten by state update later in playOrPause.
     connect(m_resources, SIGNAL(resourcesDenied()), this, SLOT(handleResourcesDenied()), Qt::QueuedConnection);
     connect(m_resources, SIGNAL(resourcesLost()), SLOT(handleResourcesLost()));
+
+    notifyTimer = new QTimer(this);
+    notifyTimer->setInterval(1000);
+    notifyTimer->setTimerType(Qt::PreciseTimer);
+    connect(notifyTimer, SIGNAL(timeout()), SLOT(_q_notify()));
 }
 
 GstreamerPlayerControl::~GstreamerPlayerControl()
@@ -124,9 +136,7 @@ void GstreamerPlayerControl::setPlaybackRate(qreal rate)
 
 void GstreamerPlayerControl::setPosition(qint64 pos)
 {
-#ifdef DEBUG_PLAYBIN
-    qDebug() << Q_FUNC_INFO << pos/1000.0;
-#endif
+    qCInfo(__gst__, "[ SetPosition ] = %lld ms", pos);
 
     pushState();
 
@@ -154,9 +164,6 @@ void GstreamerPlayerControl::setPosition(qint64 pos)
 
 void GstreamerPlayerControl::play()
 {
-#ifdef DEBUG_PLAYBIN
-    qDebug() << Q_FUNC_INFO;
-#endif
     //m_userRequestedState is needed to know that we need to resume playback when resource-policy
     //regranted the resources after lost, since m_currentState will become paused when resources are
     //lost.
@@ -166,19 +173,17 @@ void GstreamerPlayerControl::play()
 
 void GstreamerPlayerControl::pause()
 {
-#ifdef DEBUG_PLAYBIN
-    qDebug() << Q_FUNC_INFO;
-#endif
     m_userRequestedState = MultimediaPlayer::PausedState;
-
     playOrPause(MultimediaPlayer::PausedState);
 }
 
 void GstreamerPlayerControl::playOrPause(MultimediaPlayer::State newState)
 {
-#ifdef DEBUG_PLAYBIN
-    qDebug() << Q_FUNC_INFO;
-#endif
+    qCInfo(__gst__) << "[ PlayOrPause ] to" << newState
+                    << "when" << m_currentState
+                    << "url:" << m_currentResource.url().toString()
+                    << "status:" << m_mediaStatus;
+
     if (m_mediaStatus == MultimediaPlayer::NoMedia)
         return;
 
@@ -245,9 +250,6 @@ void GstreamerPlayerControl::playOrPause(MultimediaPlayer::State newState)
 
 void GstreamerPlayerControl::stop()
 {
-#ifdef DEBUG_PLAYBIN
-    qDebug() << Q_FUNC_INFO;
-#endif
     m_userRequestedState = MultimediaPlayer::StoppedState;
 
     pushState();
@@ -290,9 +292,10 @@ const QIODevice *GstreamerPlayerControl::mediaStream() const
 void GstreamerPlayerControl::setMedia(const MediaContent &content)
 {
     QIODevice *stream = 0;
-#ifdef DEBUG_PLAYBIN
-    qDebug() << Q_FUNC_INFO;
-#endif
+    if(content.isNull())
+        qCInfo(__gst__) << "[ SetMedia ] = NULL ";
+    else
+        qCInfo(__gst__) << "[ SetMedia ] =" << content.url().toString();
 
     pushState();
 
@@ -447,10 +450,8 @@ void GstreamerPlayerControl::setBufferProgress(int progress)
 {
     if (m_bufferProgress == progress || m_mediaStatus == MultimediaPlayer::NoMedia)
         return;
+    qCInfo(__gst__, "[ BufferProgress ] = %3d%%", progress);
 
-#ifdef DEBUG_PLAYBIN
-    qDebug() << Q_FUNC_INFO << progress;
-#endif
     m_bufferProgress = progress;
 
     if (m_resources->isGranted()) {
@@ -522,6 +523,15 @@ void GstreamerPlayerControl::handleResourcesDenied()
     popAndNotifyState();
 }
 
+void GstreamerPlayerControl::_q_notify()
+{
+    qCInfo(__gst__) <<  "[ NotifyPosition ]"
+                     << QDateTime::fromSecsSinceEpoch(qRound(position()/1000.0), Qt::UTC).toString("hh:mm:ss") << "/"
+                     << QDateTime::fromSecsSinceEpoch(qRound(duration()/1000.0), Qt::UTC).toString("hh:mm:ss");
+    emit positionChanged(position());
+    emit durationChanged(duration());
+}
+
 void GstreamerPlayerControl::pushState()
 {
     m_stateStack.push(m_currentState);
@@ -537,17 +547,25 @@ void GstreamerPlayerControl::popAndNotifyState()
 
     if (m_stateStack.isEmpty()) {
         if (m_mediaStatus != oldMediaStatus) {
-#ifdef DEBUG_PLAYBIN
-            qDebug() << "Media status changed:" << m_mediaStatus;
-#endif
+            qCInfo(__gst__) << "[ NotifyStatus ] =" << m_mediaStatus;
+
             emit mediaStatusChanged(m_mediaStatus);
         }
 
         if (m_currentState != oldState) {
-#ifdef DEBUG_PLAYBIN
-            qDebug() << "State changed:" << m_currentState;
-#endif
+            qCInfo(__gst__) << "[ NotifyState ] =" << m_currentState;
+
             emit stateChanged(m_currentState);
+
+            if(m_currentState == MultimediaPlayer::PlayingState) {
+                if(!notifyTimer->isActive())
+                    notifyTimer->start();
+            }else{
+                notifyTimer->stop();
+            }
         }
     }
 }
+
+
+HS_END_NAMESPACE
