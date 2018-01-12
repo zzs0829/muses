@@ -1,0 +1,123 @@
+#include "multimediametadata.h"
+
+HS_BEGIN_NAMESPACE
+
+#if defined(Q_CC_GNU) && defined(Q_COMPILER_LAMBDA)
+#    define HS_DEFINE_METADATA(key) const QString MultimediaMetaData::key(QStringLiteral(#key))
+#else
+#    define HS_DEFINE_METADATA(key) const QString MultimediaMetaData::key(QLatin1String(#key))
+#endif
+
+// Common
+HS_DEFINE_METADATA(Title);
+HS_DEFINE_METADATA(SubTitle);
+HS_DEFINE_METADATA(Author);
+HS_DEFINE_METADATA(Comment);
+HS_DEFINE_METADATA(Description);
+HS_DEFINE_METADATA(Category);
+HS_DEFINE_METADATA(Genre);
+HS_DEFINE_METADATA(Year);
+HS_DEFINE_METADATA(Date);
+HS_DEFINE_METADATA(UserRating);
+HS_DEFINE_METADATA(Keywords);
+HS_DEFINE_METADATA(Language);
+HS_DEFINE_METADATA(Publisher);
+HS_DEFINE_METADATA(Copyright);
+HS_DEFINE_METADATA(ParentalRating);
+HS_DEFINE_METADATA(RatingOrganization);
+
+// Media
+HS_DEFINE_METADATA(Size);
+HS_DEFINE_METADATA(MediaType);
+HS_DEFINE_METADATA(Duration);
+
+// Audio
+HS_DEFINE_METADATA(AudioBitRate);
+HS_DEFINE_METADATA(AudioCodec);
+HS_DEFINE_METADATA(AverageLevel);
+HS_DEFINE_METADATA(ChannelCount);
+HS_DEFINE_METADATA(PeakValue);
+HS_DEFINE_METADATA(SampleRate);
+
+// Music
+HS_DEFINE_METADATA(AlbumTitle);
+HS_DEFINE_METADATA(AlbumArtist);
+HS_DEFINE_METADATA(ContributingArtist);
+HS_DEFINE_METADATA(Composer);
+HS_DEFINE_METADATA(Conductor);
+HS_DEFINE_METADATA(Lyrics);
+HS_DEFINE_METADATA(Mood);
+HS_DEFINE_METADATA(TrackNumber);
+HS_DEFINE_METADATA(TrackCount);
+
+HS_DEFINE_METADATA(CoverArtUrlSmall);
+HS_DEFINE_METADATA(CoverArtUrlLarge);
+
+// Image/Video
+HS_DEFINE_METADATA(Resolution);
+HS_DEFINE_METADATA(PixelAspectRatio);
+
+// Video
+HS_DEFINE_METADATA(VideoFrameRate);
+HS_DEFINE_METADATA(VideoBitRate);
+HS_DEFINE_METADATA(VideoCodec);
+
+HS_DEFINE_METADATA(PosterUrl);
+
+// Movie
+HS_DEFINE_METADATA(ChapterNumber);
+HS_DEFINE_METADATA(Director);
+HS_DEFINE_METADATA(LeadPerformer);
+HS_DEFINE_METADATA(Writer);
+
+// Photos
+HS_DEFINE_METADATA(CameraManufacturer);
+HS_DEFINE_METADATA(CameraModel);
+HS_DEFINE_METADATA(Event);
+HS_DEFINE_METADATA(Subject);
+HS_DEFINE_METADATA(Orientation);
+HS_DEFINE_METADATA(ExposureTime);
+HS_DEFINE_METADATA(FNumber);
+HS_DEFINE_METADATA(ExposureProgram);
+HS_DEFINE_METADATA(ISOSpeedRatings);
+HS_DEFINE_METADATA(ExposureBiasValue);
+HS_DEFINE_METADATA(DateTimeOriginal);
+HS_DEFINE_METADATA(DateTimeDigitized);
+HS_DEFINE_METADATA(SubjectDistance);
+HS_DEFINE_METADATA(MeteringMode);
+HS_DEFINE_METADATA(LightSource);
+HS_DEFINE_METADATA(Flash);
+HS_DEFINE_METADATA(FocalLength);
+HS_DEFINE_METADATA(ExposureMode);
+HS_DEFINE_METADATA(WhiteBalance);
+HS_DEFINE_METADATA(DigitalZoomRatio);
+HS_DEFINE_METADATA(FocalLengthIn35mmFilm);
+HS_DEFINE_METADATA(SceneCaptureType);
+HS_DEFINE_METADATA(GainControl);
+HS_DEFINE_METADATA(Contrast);
+HS_DEFINE_METADATA(Saturation);
+HS_DEFINE_METADATA(Sharpness);
+HS_DEFINE_METADATA(DeviceSettingDescription);
+
+// Location
+HS_DEFINE_METADATA(GPSLatitude);
+HS_DEFINE_METADATA(GPSLongitude);
+HS_DEFINE_METADATA(GPSAltitude);
+HS_DEFINE_METADATA(GPSTimeStamp);
+HS_DEFINE_METADATA(GPSSatellites);
+HS_DEFINE_METADATA(GPSStatus);
+HS_DEFINE_METADATA(GPSDOP);
+HS_DEFINE_METADATA(GPSSpeed);
+HS_DEFINE_METADATA(GPSTrack);
+HS_DEFINE_METADATA(GPSTrackRef);
+HS_DEFINE_METADATA(GPSImgDirection);
+HS_DEFINE_METADATA(GPSImgDirectionRef);
+HS_DEFINE_METADATA(GPSMapDatum);
+HS_DEFINE_METADATA(GPSProcessingMethod);
+HS_DEFINE_METADATA(GPSAreaInformation);
+
+HS_DEFINE_METADATA(PosterImage);
+HS_DEFINE_METADATA(CoverArtImage);
+HS_DEFINE_METADATA(ThumbnailImage);
+
+HS_END_NAMESPACE

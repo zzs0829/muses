@@ -71,6 +71,8 @@ signals:
 //    void availablePlaybackRangesChanged(const MultimediaTimeRange&);
     void playbackRateChanged(qreal rate);
     void error(int error, const QString &errorString);
+    void metaDataChanged();
+    void metaDataChanged(const QString &key, const QVariant &value);
 
     void handlePlay();
     void handlePause();
@@ -93,6 +95,7 @@ protected:
     void _updateSeekable(bool seekable);
     void _updatePlaybackRate(qreal rate);
     void _updateError(int err, const QString &errorString);
+    void _updateTags(const QVariantMap &tags);
 
 private:
     static QMap<PropertyType, QString> propertyMap;

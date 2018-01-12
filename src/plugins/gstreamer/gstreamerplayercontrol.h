@@ -43,6 +43,8 @@ public:
 
     MultimediaResourceSetInterface* resources() const;
 
+    QVariantMap tags() const;
+
 public Q_SLOTS:
     void setPosition(qint64 pos) Q_DECL_OVERRIDE;
 

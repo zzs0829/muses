@@ -42,6 +42,7 @@ private slots:
     void _q_seekableChanged(bool);
     void _q_playbackRateChanged(qreal rate);
     void _q_error(int error, const QString &errorString);
+    void _q_tagsChanged();
 
 private:
     GstreamerPlayerSession *m_session;

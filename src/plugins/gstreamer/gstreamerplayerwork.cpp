@@ -36,6 +36,7 @@ void GstreamerPlayerWork::start()
     connect(m_control, SIGNAL(stateChanged(MultimediaPlayer::State)), this, SLOT(_q_stateChanged(MultimediaPlayer::State)));
     connect(m_control, SIGNAL(videoAvailableChanged(bool)), this, SLOT(_q_videoAvailableChanged(bool)));
     connect(m_control, SIGNAL(volumeChanged(int)), this, SLOT(_q_volumeChanged(int)));
+    connect(m_control, SIGNAL(tagsChanged()), this, SLOT(_q_tagsChanged()));
 }
 
 void GstreamerPlayerWork::stop()
@@ -168,4 +169,9 @@ void GstreamerPlayerWork::_q_playbackRateChanged(qreal rate)
 void GstreamerPlayerWork::_q_error(int error, const QString &errorString)
 {
     m_session->_updateError(error, errorString);
+}
+
+void GstreamerPlayerWork::_q_tagsChanged()
+{
+    m_session->_updateTags(m_control->tags());
 }

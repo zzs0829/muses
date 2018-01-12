@@ -344,4 +344,32 @@ void MediaPlayerSession::_updateError(int err, const QString &errorString)
     emit error(err, errorString);
 }
 
+void MediaPlayerSession::_updateTags(const QVariantMap &tags)
+{
+    Q_D(MediaPlayerSession);
+    QVariantMap oldTags = d->m_tags;
+    d->m_tags.clear();
+    bool changed = false;
+
+    QMapIterator<QString ,QVariant> i(tags);
+    while (i.hasNext()) {
+         i.next();
+         //use gstreamer native keys for elements not in our key map
+         QString key = i.key();
+         d->m_tags.insert(key, i.value());
+         if (i.value() != oldTags.value(key)) {
+             changed = true;
+             emit metaDataChanged(key, i.value());
+         }
+    }
+
+    if (oldTags.isEmpty() != d->m_tags.isEmpty()) {
+//        emit metaDataAvailableChanged(isMetaDataAvailable());
+        changed = true;
+    }
+
+    if (changed)
+        emit metaDataChanged();
+}
+
 HS_END_NAMESPACE

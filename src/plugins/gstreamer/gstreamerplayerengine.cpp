@@ -11,7 +11,7 @@ static bool usePlaybinVolume()
 {
     static enum { Yes, No, Unknown } status = Unknown;
     if (status == Unknown) {
-        QByteArray v = qgetenv("HS_GSTREAMER_USE_PLAYBIN_VOLUME");
+        QByteArray v = qgetenv("ENV_GSTREAMER_USE_PLAYBIN_VOLUME");
         bool value = !v.isEmpty() && v != "0" && v != "false";
         if (value)
             status = Yes;
@@ -77,7 +77,7 @@ GstreamerPlayerEngine::GstreamerPlayerEngine(QObject *parent) :
         // TODO: Check Flags
         gint flags;
         g_object_get(G_OBJECT(m_playbin), "flags", &flags, NULL);
-        QByteArray envFlags = qgetenv("HS_GSTREAMER_PLAYBIN_FLAGS");
+        QByteArray envFlags = qgetenv("ENV_GSTREAMER_PLAYBIN_FLAGS");
         if (!envFlags.isEmpty()) {
             flags |= envFlags.toInt();
 #if GST_CHECK_VERSION(1,0,0)
@@ -89,7 +89,7 @@ GstreamerPlayerEngine::GstreamerPlayerEngine(QObject *parent) :
         g_object_set(G_OBJECT(m_playbin), "flags", flags, NULL);
 
         // AudioSink
-        const QByteArray envAudioSink = qgetenv("HS_GSTREAMER_PLAYBIN_AUDIOSINK");
+        const QByteArray envAudioSink = qgetenv("ENV_GSTREAMER_PLAYBIN_AUDIOSINK");
         GstElement *audioSink = gst_element_factory_make(envAudioSink.isEmpty() ? "autoaudiosink" : envAudioSink,
                                                          "audiosink");
         if (audioSink) {
@@ -210,7 +210,7 @@ qreal GstreamerPlayerEngine::playbackRate() const
 void GstreamerPlayerEngine::setPlaybackRate(qreal rate)
 {
     if (!qFuzzyCompare(m_playbackRate, rate)) {
-        qCInfo(__gst__, "[ SetPlaybackRate ] = %f", rate);
+        qCInfo(__gst__, "[ GstPlaybackRate ] set %f", rate);
 
         m_playbackRate = rate;
         if (m_playbin && m_seekable) {
@@ -245,7 +245,7 @@ bool GstreamerPlayerEngine::isVideoAvailable() const
 
 void GstreamerPlayerEngine::setVideoRenderer(QObject *videoOutput)
 {
-    qCInfo(__gst__) << "[ SetVideoRenderer ] =" << videoOutput;
+    qCInfo(__gst__) << "[ GstVideoRenderer ] set" << videoOutput;
 
     if (m_videoOutput != videoOutput) {
         if (m_videoOutput) {
@@ -433,7 +433,7 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
             QMap<QByteArray, QVariant> newTags = GstUtils::gstTagListToMap(tag_list);
             QMap<QByteArray, QVariant>::const_iterator it = newTags.constBegin();
             for ( ; it != newTags.constEnd(); ++it) {
-                qCDebug(__gst__) << qUtf8Printable(QString("[ TAG ] [ %1 ] : %2") \
+                qCDebug(__gst__) << qUtf8Printable(QString("[ GstTAG ] [ %1 ] : %2") \
                                                    .arg(QString(it.key())) \
                                                    .arg(it.value().toString()));
 
@@ -448,11 +448,11 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
         }
 
         if (m_sourceType == MMSSrc && qstrcmp(GST_OBJECT_NAME(GST_MESSAGE_SRC(gm)), "source") == 0) {
-            qCDebug(__gst__) << "[ Message ] from MMSSrc: " << GST_MESSAGE_TYPE(gm);
+            qCDebug(__gst__) << "[ GstMessage ] from MMSSrc: " << GST_MESSAGE_TYPE(gm);
         } else if (m_sourceType == RTSPSrc && qstrcmp(GST_OBJECT_NAME(GST_MESSAGE_SRC(gm)), "source") == 0) {
-            qCDebug(__gst__) << "[ Message ] from RTSPSrc: " << GST_MESSAGE_TYPE(gm);
+            qCDebug(__gst__) << "[ GstMessage ] from RTSPSrc: " << GST_MESSAGE_TYPE(gm);
         } else {
-            qCDebug(__gst__) << "[ Message ] from " << GST_OBJECT_NAME(GST_MESSAGE_SRC(gm)) << ":" << GST_MESSAGE_TYPE(gm);
+            qCDebug(__gst__) << "[ GstMessage ] from " << GST_OBJECT_NAME(GST_MESSAGE_SRC(gm)) << ":" << GST_MESSAGE_TYPE(gm);
         }
 
         if (GST_MESSAGE_TYPE(gm) == GST_MESSAGE_BUFFERING) {
@@ -474,7 +474,7 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
 
                     QStringList states;
                     states << "GST_STATE_VOID_PENDING" <<  "GST_STATE_NULL" << "GST_STATE_READY" << "GST_STATE_PAUSED" << "GST_STATE_PLAYING";
-                    qCInfo(__gst__) << qPrintable(QString("[ State Changed ] : old: %1  new: %2  pending: %3") \
+                    qCInfo(__gst__) << qPrintable(QString("[ GstState ] : old: %1  new: %2  pending: %3") \
                                                   .arg(states[oldState]) \
                                                   .arg(states[newState]) \
                                                   .arg(states[pending]));
@@ -557,7 +557,6 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
                         processInvalidMedia(MultimediaPlayer::FormatError, tr("Cannot play stream of type: <unknown>"));
                     else
                         processInvalidMedia(MultimediaPlayer::ResourceError, QString::fromUtf8(err->message));
-                    qWarning() << "[ Error ]:" << QString::fromUtf8(err->message);
                     g_error_free(err);
                     g_free(debug);
                 }
@@ -567,7 +566,7 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
                     GError *err;
                     gchar *debug;
                     gst_message_parse_warning (gm, &err, &debug);
-                    qWarning() << "[ Warning ]:" << QString::fromUtf8(err->message);
+                    qCWarning(__gst__) << "[ GstWarn ]:" << QString::fromUtf8(err->message);
                     g_error_free (err);
                     g_free (debug);
                 }
@@ -577,7 +576,7 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
                 GError *err;
                 gchar *debug;
                 gst_message_parse_info (gm, &err, &debug);
-                qCInfo(__gst__) << "[ Info ]:" << QString::fromUtf8(err->message);
+                qCInfo(__gst__) << "[ GstInfo ]:" << QString::fromUtf8(err->message);
                 g_error_free (err);
                 g_free (debug);
             }
@@ -613,7 +612,7 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
                 if (hs_gst_element_query_position(m_playbin, GST_FORMAT_TIME, &position)) {
                     position /= 1000000;
                     m_lastPosition = position;
-                    qCInfo(__gst__, "Position : %lld ms", position);
+                    qCInfo(__gst__, "[ GstPosition ] start %lld ms", m_lastPosition);
                     emit positionChanged(position);
                 }
                 break;
@@ -712,7 +711,7 @@ bool GstreamerPlayerEngine::processBusMessage(const GstreamerMessage &message)
 // PUBLIC SLOTS
 void GstreamerPlayerEngine::loadFromUri(const QNetworkRequest &request)
 {
-    qCInfo(__gst__) << "[ LoadFromUri ] =" << request.url().toString();
+    qCInfo(__gst__) << "[ GstMedia ] set" << request.url().toString();
 
     m_request = request;
     m_duration = -1;
@@ -736,7 +735,7 @@ void GstreamerPlayerEngine::loadFromUri(const QNetworkRequest &request)
 
 bool GstreamerPlayerEngine::play()
 {
-    qCInfo(__gst__) << "[ Play ] when" << m_state;
+    qCInfo(__gst__) << "[ GstPlay ] when" << m_state;
 
     m_everPlayed = false;
     if (m_playbin) {
@@ -756,7 +755,7 @@ bool GstreamerPlayerEngine::play()
 
 bool GstreamerPlayerEngine::pause()
 {
-    qCInfo(__gst__) << "[ Pause ] when" << m_state;
+    qCInfo(__gst__) << "[ GstPause ] when" << m_state;
 
     if (m_playbin) {
         m_pendingState = MultimediaPlayer::PausedState;
@@ -778,7 +777,7 @@ bool GstreamerPlayerEngine::pause()
 
 void GstreamerPlayerEngine::stop()
 {
-    qCInfo(__gst__) << "[ Stop ] when" << m_state;
+    qCInfo(__gst__) << "[ GstStop ] when" << m_state;
 
     m_everPlayed = false;
     if (m_playbin) {
@@ -806,7 +805,7 @@ bool GstreamerPlayerEngine::seek(qint64 ms)
 {
     //seek locks when the video output sink is changing and pad is blocked
     if (m_playbin && !m_pendingVideoSink && m_state != MultimediaPlayer::StoppedState && m_seekable) {
-        qCInfo(__gst__, "[ seek ] = %lld ms", ms);
+        qCInfo(__gst__, "[ GstSeek ] set %lld ms", ms);
 
         ms = qMax(ms, qint64(0));
         gint64  position = ms * 1000000;
@@ -824,9 +823,9 @@ bool GstreamerPlayerEngine::seek(qint64 ms)
         return isSeeking;
     }else{
         if(m_state == MultimediaPlayer::StoppedState)
-            qCWarning(__gst__) << "[ seek ] when" << m_state;
+            qCWarning(__gst__) << "[ GstSeek ] when" << m_state;
         if(!m_seekable)
-            qCWarning(__gst__) << "[ seek ] when seekable =" << m_seekable;
+            qCWarning(__gst__) << "[ GstSeek ] when seekable =" << m_seekable;
     }
 
     return false;
@@ -835,7 +834,7 @@ bool GstreamerPlayerEngine::seek(qint64 ms)
 void GstreamerPlayerEngine::setVolume(int volume)
 {
     if (m_volume != volume) {
-        qCInfo(__gst__, "[ SetVolume ] = %d", volume);
+        qCInfo(__gst__, "[ GstVolume ] set %d", volume);
 
         m_volume = volume;
 
@@ -849,7 +848,7 @@ void GstreamerPlayerEngine::setVolume(int volume)
 void GstreamerPlayerEngine::setMuted(bool muted)
 {
     if (m_muted != muted) {
-        qCInfo(__gst__, "[ SetMuted ] = %s", muted ? "true" : "false");
+        qCInfo(__gst__, "[ GstMuted ] set %s", muted ? "true" : "false");
 
         m_muted = muted;
 
@@ -862,7 +861,7 @@ void GstreamerPlayerEngine::setMuted(bool muted)
 
 void GstreamerPlayerEngine::showPrerollFrames(bool enabled)
 {
-    qCInfo(__gst__, "[ ShowPrerollFrames ] = %s", enabled ? "true" : "false");
+    qCInfo(__gst__, "[ GstShowPrerollFrames ] set %s", enabled ? "true" : "false");
 
     if (enabled != m_displayPrerolledFrame && m_videoSink &&
             g_object_class_find_property(G_OBJECT_GET_CLASS(m_videoSink), "show-preroll-frame") != 0) {
@@ -877,7 +876,7 @@ void GstreamerPlayerEngine::showPrerollFrames(bool enabled)
 void GstreamerPlayerEngine::setSeekable(bool seekable)
 {
     if (seekable != m_seekable) {
-        qCInfo(__gst__, "[ SetSeekable ] = %s", seekable ? "true" : "false");
+        qCInfo(__gst__, "[ GstSeekable ] read %s", seekable ? "true" : "false");
 
         m_seekable = seekable;
         emit seekableChanged(m_seekable);
@@ -909,7 +908,7 @@ void GstreamerPlayerEngine::updateDuration()
         duration = gstDuration / 1000000;
 
     if (m_duration != duration) {
-        qCInfo(__gst__, "[ UpdateDuration ] = %lld ms", duration);
+        qCInfo(__gst__, "[ GstDuration ] read %lld ms", duration);
 
         m_duration = duration;
         emit durationChanged(m_duration);
@@ -926,7 +925,7 @@ void GstreamerPlayerEngine::updateDuration()
     setSeekable(seekable);
 
     if (m_durationQueries > 0) {
-        qCInfo(__gst__, "[ UpdateDuration ] Queries = %d", m_durationQueries);
+        qCInfo(__gst__, "[ GstDuration ] read Queries = %d", m_durationQueries);
 
         //increase delay between duration requests
         int delay = 25 << (5 - m_durationQueries);
@@ -954,7 +953,7 @@ void GstreamerPlayerEngine::updateVolume()
     if (m_volume != int(volume*100 + 0.5)) {
         m_volume = int(volume*100 + 0.5);
 
-        qCInfo(__gst__, "[ UpdateVolume ] = %d", m_volume);
+        qCInfo(__gst__, "[ GstVolume ] read %d", m_volume);
 
         emit volumeChanged(m_volume);
     }
@@ -973,7 +972,7 @@ void GstreamerPlayerEngine::updateMuted()
     gboolean muted = FALSE;
     g_object_get(G_OBJECT(m_playbin), "mute", &muted, NULL);
     if (m_muted != muted) {
-        qCInfo(__gst__, "[ UpdateMuted ] = %s", m_muted ? "true" : "false");
+        qCInfo(__gst__, "[ GstMuted ] read %s", m_muted ? "true" : "false");
 
         m_muted = muted;
         emit mutedStateChanged(muted);
@@ -983,7 +982,7 @@ void GstreamerPlayerEngine::updateMuted()
 //doing proper operations when detecting an invalidMedia: change media status before signal the erorr
 void GstreamerPlayerEngine::processInvalidMedia(MultimediaPlayer::Error errorCode, const QString& errorString)
 {
-    qCInfo(__gst__) <<  "[ ProcessInvalidMedia ] " << errorCode << errorString;
+    qCCritical(__gst__) <<  "[ GstError ] " << errorCode << errorString;
 
     emit invalidMedia();
     stop();

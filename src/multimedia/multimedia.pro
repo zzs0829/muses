@@ -38,7 +38,8 @@ SOURCES += \
     multimediasession.cpp \
     multimediasession_p.cpp \
     multimediasessionwork.cpp \
-    multimediasessionwork_p.cpp
+    multimediasessionwork_p.cpp \
+    multimediametadata.cpp
 
 include(media/media.pri)
 include(controller/controller.pri)
@@ -59,7 +60,8 @@ HEADERS += $$PUBLIC_HEADERS $$PRIVATE_HEADERS \
     multimediasession.h \
     multimediasession_p.h \
     multimediasessionwork.h \
-    multimediasessionwork_p.h
+    multimediasessionwork_p.h \
+    multimediametadata.h
 
 load(qt_module)
 

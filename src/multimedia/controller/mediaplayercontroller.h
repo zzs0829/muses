@@ -62,6 +62,7 @@ Q_SIGNALS:
 //    void availablePlaybackRangesChanged(const MultimediaTimeRange&);
     void playbackRateChanged(qreal rate);
     void error(int error, const QString &errorString);
+    void tagsChanged();
 
 protected:
     explicit MediaPlayerController(QObject *parent = Q_NULLPTR);

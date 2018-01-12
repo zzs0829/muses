@@ -11,6 +11,8 @@ class MULTIMEDIA_PRIVATE_EXPORT MediaPlayerSessionPrivate :
 {
 public:
     MediaPlayerSessionPrivate(const QString &id, const QString &key);
+
+    QVariantMap m_tags;
 };
 
 HS_END_NAMESPACE

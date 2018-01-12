@@ -73,6 +73,11 @@ MultimediaResourceSetInterface* GstreamerPlayerControl::resources() const
     return m_resources;
 }
 
+QVariantMap GstreamerPlayerControl::tags() const
+{
+    return QVariantMap();
+}
+
 qint64 GstreamerPlayerControl::position() const
 {
     if (m_mediaStatus == MultimediaPlayer::EndOfMedia)
@@ -136,7 +141,7 @@ void GstreamerPlayerControl::setPlaybackRate(qreal rate)
 
 void GstreamerPlayerControl::setPosition(qint64 pos)
 {
-    qCInfo(__gst__, "[ SetPosition ] = %lld ms", pos);
+    qCInfo(__gst__, "[ CtlPosition ] set %lld ms", pos);
 
     pushState();
 
@@ -179,7 +184,7 @@ void GstreamerPlayerControl::pause()
 
 void GstreamerPlayerControl::playOrPause(MultimediaPlayer::State newState)
 {
-    qCInfo(__gst__) << "[ PlayOrPause ] to" << newState
+    qCInfo(__gst__) << "[ CtlPlayOrPause ] to" << newState
                     << "when" << m_currentState
                     << "url:" << m_currentResource.url().toString()
                     << "status:" << m_mediaStatus;
@@ -250,6 +255,8 @@ void GstreamerPlayerControl::playOrPause(MultimediaPlayer::State newState)
 
 void GstreamerPlayerControl::stop()
 {
+    qCInfo(__gst__) << "[ CtlStop ] when" << m_currentState;
+
     m_userRequestedState = MultimediaPlayer::StoppedState;
 
     pushState();
@@ -293,9 +300,9 @@ void GstreamerPlayerControl::setMedia(const MediaContent &content)
 {
     QIODevice *stream = 0;
     if(content.isNull())
-        qCInfo(__gst__) << "[ SetMedia ] = NULL ";
+        qCInfo(__gst__) << "[ CtlMedia ] set NULL ";
     else
-        qCInfo(__gst__) << "[ SetMedia ] =" << content.url().toString();
+        qCInfo(__gst__) << "[ CtlMedia ] set" << content.url().toString();
 
     pushState();
 
@@ -370,6 +377,7 @@ bool GstreamerPlayerControl::isVideoAvailable() const
     return m_engine->isVideoAvailable();
 }
 
+// private slot
 void GstreamerPlayerControl::updateSessionState(MultimediaPlayer::State state)
 {
     pushState();
@@ -395,6 +403,7 @@ void GstreamerPlayerControl::updateSessionState(MultimediaPlayer::State state)
     popAndNotifyState();
 }
 
+// private slot
 void GstreamerPlayerControl::updateMediaStatus()
 {
     pushState();
@@ -431,6 +440,7 @@ void GstreamerPlayerControl::updateMediaStatus()
     popAndNotifyState();
 }
 
+// private slot
 void GstreamerPlayerControl::processEOS()
 {
     pushState();
@@ -446,11 +456,12 @@ void GstreamerPlayerControl::processEOS()
     popAndNotifyState();
 }
 
+// private slot
 void GstreamerPlayerControl::setBufferProgress(int progress)
 {
     if (m_bufferProgress == progress || m_mediaStatus == MultimediaPlayer::NoMedia)
         return;
-    qCInfo(__gst__, "[ BufferProgress ] = %3d%%", progress);
+    qCInfo(__gst__, "[ CtlBufferProgress ] read %3d%%", progress);
 
     m_bufferProgress = progress;
 
@@ -471,6 +482,7 @@ void GstreamerPlayerControl::setBufferProgress(int progress)
     emit bufferStatusChanged(m_bufferProgress);
 }
 
+// private slot
 void GstreamerPlayerControl::handleInvalidMedia()
 {
     pushState();
@@ -480,6 +492,7 @@ void GstreamerPlayerControl::handleInvalidMedia()
     popAndNotifyState();
 }
 
+// private slot
 void GstreamerPlayerControl::handleResourcesGranted()
 {
     pushState();
@@ -496,6 +509,7 @@ void GstreamerPlayerControl::handleResourcesGranted()
     popAndNotifyState();
 }
 
+// private slot
 void GstreamerPlayerControl::handleResourcesLost()
 {
     //on resource lost the pipeline should be paused
@@ -511,6 +525,7 @@ void GstreamerPlayerControl::handleResourcesLost()
     popAndNotifyState();
 }
 
+// private slot
 void GstreamerPlayerControl::handleResourcesDenied()
 {
     //on resource denied the pipeline should stay paused
@@ -523,10 +538,11 @@ void GstreamerPlayerControl::handleResourcesDenied()
     popAndNotifyState();
 }
 
+// private slot
 void GstreamerPlayerControl::_q_notify()
 {
-    qCInfo(__gst__) <<  "[ NotifyPosition ]"
-                     << QDateTime::fromSecsSinceEpoch(qRound(position()/1000.0), Qt::UTC).toString("hh:mm:ss") << "/"
+    qCInfo(__gst__) <<  "[ CtlPosition ] read"
+                     << QDateTime::fromSecsSinceEpoch(qRound(position()/1000.0), Qt::UTC).toString("hh:mm:ss") << "-"
                      << QDateTime::fromSecsSinceEpoch(qRound(duration()/1000.0), Qt::UTC).toString("hh:mm:ss");
     emit positionChanged(position());
     emit durationChanged(duration());
@@ -547,13 +563,13 @@ void GstreamerPlayerControl::popAndNotifyState()
 
     if (m_stateStack.isEmpty()) {
         if (m_mediaStatus != oldMediaStatus) {
-            qCInfo(__gst__) << "[ NotifyStatus ] =" << m_mediaStatus;
+            qCInfo(__gst__) << "[ CtlStatus ] read" << m_mediaStatus;
 
             emit mediaStatusChanged(m_mediaStatus);
         }
 
         if (m_currentState != oldState) {
-            qCInfo(__gst__) << "[ NotifyState ] =" << m_currentState;
+            qCInfo(__gst__) << "[ CtlState ] read" << m_currentState;
 
             emit stateChanged(m_currentState);
 
