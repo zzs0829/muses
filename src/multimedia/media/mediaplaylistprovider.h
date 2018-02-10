@@ -43,7 +43,7 @@ public:
     virtual bool insertMedia(int index, const QList<MediaContent> &content);
     virtual bool moveMedia(int from, int to);
     virtual bool removeMedia(int pos);
-    virtual bool removeMedia(int start, int end);
+    virtual bool removeMedia(int startIndex, int endIndex);
     virtual bool clear();
 
 public Q_SLOTS:
@@ -51,15 +51,15 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     // for PlaylistModel
-    void mediaAboutToBeInserted(int start, int end);
-    void mediaInserted(int start, int end);
+    void mediaAboutToBeInserted(int startIndex, int endIndex);
+    void mediaInserted(int startIndex, int endIndex);
 
     // for PlaylistModel
-    void mediaAboutToBeRemoved(int start, int end);
-    void mediaRemoved(int start, int end);
+    void mediaAboutToBeRemoved(int startIndex, int endIndex);
+    void mediaRemoved(int startIndex, int endIndex);
 
     // for PlaylistModel
-    void mediaChanged(int start, int end);
+    void mediaChanged(int startIndex, int endIndex);
 
     // for PlaylistModel
     void loaded();

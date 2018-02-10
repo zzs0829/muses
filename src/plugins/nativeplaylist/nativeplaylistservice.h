@@ -2,14 +2,15 @@
 #define NATIVEPLAYLISTSERVICE_H
 
 #include <Multimedia/multimediaservice.h>
+#include "nativeplaylistgobal.h"
+#include "nativeplaylistsession.h"
 
 
 class NativePlaylistService : public MultimediaService
 {
     Q_OBJECT
 public:
-    NativePlaylistService(const QString &path, const QString &filters,
-                          QObject *parent = 0);
+    NativePlaylistService(QObject *parent = 0);
 
     virtual MultimediaController* requestController(const char *uid) Q_DECL_OVERRIDE;
 
@@ -20,7 +21,7 @@ public:
     virtual void availableSession(MultimediaSession *session) Q_DECL_OVERRIDE;
 
 private:
-    MultimediaController *m_control;
+    QMap<QString, NativePlaylistSession *> m_sessions;
 };
 
 #endif // NATIVEPLAYLISTSERVICE_H

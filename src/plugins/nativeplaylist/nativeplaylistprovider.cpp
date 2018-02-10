@@ -29,8 +29,10 @@ bool NativePlaylistProviderPrivate::load()
 
 void NativePlaylistProviderPrivate::_q_handleNewItem(const QList<MediaContent> &medias)
 {
+    Q_Q(NativePlaylistProvider);
+    qDebug() << "[ Found MediaContent ] " << resources.size() << "lines; " << time.elapsed() << "ms;";
     resources = medias;
-    qDebug() << "[ Found MediaContent ] " << resources.count() << "lines; " << time.elapsed() << "ms;";
+    emit q->mediaChanged(0, resources.size() - 1);
 }
 
 NativePlaylistProvider::NativePlaylistProvider(const QString &path,

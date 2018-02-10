@@ -129,13 +129,13 @@ bool MediaPlaylistProvider::removeMedia(int position)
     return false;
 }
 
-bool MediaPlaylistProvider::removeMedia(int start, int end)
+bool MediaPlaylistProvider::removeMedia(int startIndex, int endIndex)
 {
     if(isReadOnly()) {
         qWarning() << "The playlist provider is readonly and cannot remove medias.";
         return false;
     }else{
-        for (int pos=start; pos<=end; pos++) {
+        for (int pos=startIndex; pos<=endIndex; pos++) {
             if (!removeMedia(pos))
                 return false;
         }

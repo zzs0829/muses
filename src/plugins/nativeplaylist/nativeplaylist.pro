@@ -11,7 +11,9 @@ HEADERS += \
     nativeplaylistengine.h \
     nativefilefindworker.h \
     nativeplaylistcontrol.h \
-    nativeplaylistprovider.h
+    nativeplaylistprovider.h \
+    nativeplaylistsession.h \
+    nativeplaylistgobal.h
 
 SOURCES += \
     nativeplaylistserviceplugin.cpp \
@@ -19,7 +21,9 @@ SOURCES += \
     nativeplaylistengine.cpp \
     nativefilefindworker.cpp \
     nativeplaylistcontrol.cpp \
-    nativeplaylistprovider.cpp
+    nativeplaylistprovider.cpp \
+    nativeplaylistsession.cpp \
+    nativeplaylistgobal.cpp
 
 PLUGIN_TYPE = medialist
 PLUGIN_CLASS_NAME = NativePlaylistServicePlugin

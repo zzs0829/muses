@@ -83,6 +83,20 @@ void NativeFileFindWorker::run()
         }
     }
 
+//    std::sort(filelist.begin(), filelist.end(), [](const QFileInfo &info1, const QFileInfo &info2) {
+//        QStringList list1 = info1.absoluteFilePath().split(QDir::separator());
+//        QStringList list2 = info2.absoluteFilePath().split(QDir::separator());
+//        for(int i = 0; i < qMin(list1.size(), list2.size()); ++i) {
+//            if(i == (list1.size() - 1) && i < (list2.size() - 1))
+//                return true;
+//            else if(i == (list2.size() - 1) && i < (list1.size() - 1))
+//                return false;
+//            if(list1.at(i) != list2.at(i))
+//                return list1.at(i) > list2.at(i);
+//        }
+//        return false;
+//    });
+
 #ifdef TIME_DEBUG
     float times = time.elapsed();
     QString unit = "ms";
